@@ -40,11 +40,15 @@ jobs:
           release_name: Release
           overwrite: true
           
-      - name: Compile Markdown to PDF
+      - name: Compile Markdown to HTML
         run: find . -type f -iname "*.md" -exec pandoc --template=eisvogel.tex -o output.html --metadata title="OI - SI - Státnicové okruhy" -s {} +
           
-      - name: Deploy GitHub Pages site
-        uses: actions/deploy-pages@v2.0.0
-        if: steps.compile.outcome == 'success'
+      - name: Setup Pages
+        uses: actions/configure-pages@v3
+      - name: Upload artifact
+        uses: actions/upload-pages-artifact@v1
         with:
-          artifact_name: output.html
+          path: 'output.html'
+      - name: Deploy to GitHub Pages
+        id: deployment
+        uses: actions/deploy-pages@v2
