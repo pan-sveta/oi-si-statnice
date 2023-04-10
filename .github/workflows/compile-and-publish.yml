@@ -45,11 +45,8 @@ jobs:
           release_name: Release
           overwrite: true
           
-      - name: Create output folder
-        run: mkdir _site
-          
       - name: Compile Markdown to HTML
-        run: find . -type f -iname "*.md" -exec pandoc -o _site/index.html -f markdown+rebase_relative_paths --metadata title="OI - SI - Státnicové okruhy" -s {} +
+        run: find . -type f -iname "*.md" -exec pandoc -o index.html -f markdown+rebase_relative_paths --metadata title="OI - SI - Státnicové okruhy" -s {} +
           
       - name: Setup Pages
         uses: actions/configure-pages@v3
@@ -57,7 +54,7 @@ jobs:
       - name: Upload Pages artifact
         uses: actions/upload-pages-artifact@v1
         with:
-          path: '_site/'
+          path: '.'
           
       - name: Deploy to GitHub Pages
         id: deployment
