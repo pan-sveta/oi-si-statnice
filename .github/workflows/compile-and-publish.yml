@@ -18,17 +18,22 @@ jobs:
   # This workflow contains a single job called "build"
   build:
     runs-on: ubuntu-latest
-    container:
-      image: pandoc/extra
 
     # Steps represent a sequence of tasks that will be executed as part of the job
-    steps:
-      # Checks-out your repository under $GITHUB_WORKSPACE, so your job can access it
+    steps:      
+      - name: Install Pandoc & Latex
+        run: apt-get updatge & apt-get install -y pandoc texlive-full
+        
+      - name: Cache APT Packages
+        uses: awalsh128/cache-apt-pkgs-action@v1.3.0
+        with:
+          packages: pandoc texlive-full
+      
       - uses: actions/checkout@v3
 
       - name: Get eisvogel.tex
         run: wget https://raw.githubusercontent.com/Wandmalfarbe/pandoc-latex-template/master/eisvogel.tex
-      
+
       - name: Compile Markdown to PDF
         run: find . -type f -iname "*.md" -exec pandoc --template=eisvogel.tex -o output.pdf -s {} +
         
@@ -39,3 +44,4 @@ jobs:
         with:
           file: output.pdf
           asset_name: oi-si-statnice.pdf
+          release_name: Release 🚀💾
