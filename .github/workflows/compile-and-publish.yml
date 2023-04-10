@@ -22,12 +22,12 @@ jobs:
     # Steps represent a sequence of tasks that will be executed as part of the job
     steps:      
       - name: Install Pandoc & Latex
-        run: sudo apt-get updatge & sudo apt-get install -y pandoc texlive-full
+        run: sudo apt-get updatge & sudo apt-get install -y pandoc texlive
         
       - name: Cache APT Packages
         uses: awalsh128/cache-apt-pkgs-action@v1.3.0
         with:
-          packages: pandoc texlive-full
+          packages: pandoc texlive
       
       - uses: actions/checkout@v3
 
