@@ -18,14 +18,12 @@ jobs:
   # This workflow contains a single job called "build"
   build:
     runs-on: ubuntu-latest
+    container:
+      image: pandoc/extra
 
     # Steps represent a sequence of tasks that will be executed as part of the job
-    steps:             
-      - name: Cache APT Packages
-        uses: awalsh128/cache-apt-pkgs-action@v1.3.0
-        with:
-          packages: pandoc texlive-full
-      
+    steps:
+      # Checks-out your repository under $GITHUB_WORKSPACE, so your job can access it
       - uses: actions/checkout@v3
 
       - name: Get eisvogel.tex
