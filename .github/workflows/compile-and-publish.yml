@@ -41,14 +41,14 @@ jobs:
           overwrite: true
           
       - name: Compile Markdown to HTML
-        run: find . -type f -iname "*.md" -exec pandoc --template=eisvogel.tex -o output.html --metadata title="OI - SI - Státnicové okruhy" -s {} +
+        run: find . -type f -iname "*.md" -exec pandoc --template=eisvogel.tex -o _site/output.html --metadata title="OI - SI - Státnicové okruhy" -s {} +
           
       - name: Setup Pages
         uses: actions/configure-pages@v3
       - name: Upload artifact
         uses: actions/upload-pages-artifact@v1
         with:
-          path: 'output.html'
+          path: '_site/'
       - name: Deploy to GitHub Pages
         id: deployment
         uses: actions/deploy-pages@v2
