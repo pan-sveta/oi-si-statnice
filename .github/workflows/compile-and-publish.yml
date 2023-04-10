@@ -30,17 +30,18 @@ jobs:
         run: wget https://raw.githubusercontent.com/Wandmalfarbe/pandoc-latex-template/master/eisvogel.tex
 
       - name: Compile Markdown to PDF
-        id: compile
-        run: find . -type f -iname "*.md" -exec pandoc --template=eisvogel.tex -o output.pdf -o output.html -s {} +
+        run: find . -type f -iname "*.md" -exec pandoc --template=eisvogel.tex -o output.pdf -s {} +
         
       - name: Upload files to a GitHub release
         uses: svenstaro/upload-release-action@2.5.0
-        if: steps.compile.outcome == 'success'
         with:
           file: output.pdf
           asset_name: oi-si-statnice.pdf
           release_name: Release
           overwrite: true
+          
+      - name: Compile Markdown to PDF
+        run: find . -type f -iname "*.md" -exec pandoc --template=eisvogel.tex -o output.html -s {} +
           
       - name: Deploy GitHub Pages site
         uses: actions/deploy-pages@v2.0.0
