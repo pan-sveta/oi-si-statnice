@@ -25,10 +25,7 @@ jobs:
     steps:
       # Checks-out your repository under $GITHUB_WORKSPACE, so your job can access it
       - uses: actions/checkout@v3
-
-      - name: Set up Pandoc and LaTeX
-        run: sudo apt-get update & sudo apt-get install -y pandoc texlive-latex-extra texlive-fonts-recommended texlive-fonts-extra
-
+      
       - name: Compile Markdown to PDF
         run: find . -type f -iname "*.md" -exec pandoc {} -s --pdf-engine=xelatex -V geometry:margin=1in --template=Eisvogel.latex -o output.pdf \;
         
