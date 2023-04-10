@@ -25,9 +25,12 @@ jobs:
     steps:
       # Checks-out your repository under $GITHUB_WORKSPACE, so your job can access it
       - uses: actions/checkout@v3
+
+      - name: Get eisvogel.tex
+        run: wget https://raw.githubusercontent.com/Wandmalfarbe/pandoc-latex-template/master/eisvogel.tex
       
       - name: Compile Markdown to PDF
-        run: find . -type f -iname "*.md" -exec pandoc {} --template=eisvogel.latex -o output.pdf \;
+        run: find . -type f -iname "*.md" -exec pandoc {} --template=eisvogel.tex -o output.pdf \;
         
       - name: Upload PDF
         uses: actions/upload-artifact@v3.1.2
