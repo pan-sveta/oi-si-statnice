@@ -14,4 +14,4 @@ update and query operators, projection, modifiers).
 
 Graph data structures (adjacency matrix, adjacency list, incidence matrix). Data locality (BFS layout, bandwidth minimization problem, Cuthill-McKee algorithm). Graph partitioning (1D partitioning, 2D partitioning). Neo4j (traversal framework, traversal description, traverser). Cypher (graph matching, read, write and general clauses).
 
-!["pevo"](pevo.jpg "Pevo")
+!["pevo"](./pevo.jpg "Pevo")
