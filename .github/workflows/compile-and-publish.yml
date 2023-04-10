@@ -32,8 +32,10 @@ jobs:
       - name: Compile Markdown to PDF
         run: find . -type f -iname "*.md" -exec pandoc --template=eisvogel.tex -o output.pdf -s {} +
         
-      - name: Upload PDF
-        uses: actions/upload-artifact@v3.1.2
+      - name: Upload files to a GitHub release
+        # You may pin to the exact commit or the version.
+        # uses: svenstaro/upload-release-action@7319e4733ec7a184d739a6f412c40ffc339b69c7
+        uses: svenstaro/upload-release-action@2.5.0
         with:
-          name: Compiled-PDF
-          path: output.pdf
+          file: output.pdf
+          asset_name: oi-si-statnice.pdf
