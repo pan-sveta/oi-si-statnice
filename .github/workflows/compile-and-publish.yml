@@ -40,6 +40,9 @@ jobs:
           release_name: Release
           overwrite: true
           
+      - name: Create output folder
+        run: mkdir _site
+          
       - name: Compile Markdown to HTML
         run: find . -type f -iname "*.md" -exec pandoc --template=eisvogel.tex -o _site/output.html --metadata title="OI - SI - Státnicové okruhy" -s {} +
           
