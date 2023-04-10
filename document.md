@@ -6,5 +6,3 @@ subtitle: "Státnicové otázky"
 lang: "en"
 titlepage: true
 ...
-
-# Otevřená informatika - Softwarové inženýrství - Státnicové otázky
