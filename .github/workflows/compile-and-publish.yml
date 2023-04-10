@@ -13,6 +13,11 @@ on:
   # Allows you to run this workflow manually from the Actions tab
   workflow_dispatch:
 
+permissions:
+  contents: read
+  pages: write
+  id-token: write
+      
 # A workflow run is made up of one or more jobs that can run sequentially or in parallel
 jobs:
   # This workflow contains a single job called "build"
@@ -20,10 +25,6 @@ jobs:
     runs-on: ubuntu-latest
     container:
       image: pandoc/extra
-    permissions:
-      contents: read
-      pages: write
-      id-token: write
 
     # Steps represent a sequence of tasks that will be executed as part of the job
     steps:
