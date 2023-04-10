@@ -1,8 +1,10 @@
-# Topics
+# KO
+
+## Topics
 Combinatorial optimization problems - formulation, complexity analysis, algorithms and
 example applications. BE4M35KO (Course web pages)
 
-# Questions
+## Questions
 Integer Linear Programming. Shortest paths problem and traveling salesman problem ILP formulations. Branch and Bound algorithm. Problem formulations using ILP. Special ILP problems solvable in polynomial time.
 
 Shortest paths problem. Dijkstra, Bellman-Ford, and Floyd–Warshall algorithms. Shortest paths in directed acyclic graphs. Problem formulations using shortest paths.

@@ -1,7 +1,9 @@
-# Topics
+# ESW
+
+## Topics
 Effective algorithms and optimization methods. Data structures, synchronization and multithreaded programs. BE4M36ESW (Course web pages)
 
-# Questions
+## Questions
 Java Virtual Machine, memory layout, frame, stack-oriented machine processing, ordinary object pointer, compressed ordinary object pointer. JVM bytecode, Just-in-time compiler, tired compilation, on-stack replacement, disassembler, decompiler. Global and local safe point, time to safe point. Automatic memory Management, generational hypothesis, garbage collectors. CPU and memory profiling, sampling and tracing approach, warm-up phase.
 
 Data races, CPU pipelining and superscalar architecture, memory barrier, volatile variable. Synchronization - thin, fat and biased locking, reentrant locks. Atomic operations based on compare-and-set instructions, atomic field updaters. Non-blocking algorithms, ait free algorithms, non-blocking stack (LIFO).

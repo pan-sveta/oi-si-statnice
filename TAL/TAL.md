@@ -1,8 +1,10 @@
-# Topics
+# TAL
+
+## Topics
 Problem/language complexity classes with respect to the time complexity of their solution and memory complexity including undecidable problems/languages. BE4M01TAL
 (Course web pages)
 
-# Questions
+## Questions
 Asymptotic growth of functions, time and space complexity of algorithms. Correctness of algorithms - variant and invariant.
 
 Deterministic Turing machines, multitape Turing machines, and Nondeterministic Turing machines.

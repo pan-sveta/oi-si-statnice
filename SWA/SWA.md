@@ -1,8 +1,10 @@
-# Topics
+# SWA
+
+## Topics
 Software architectures, their parameters and qualitative metrics. Architectural patterns,
 styles and standards. BE4M36SWA (Course web pages)
 
-# Questions
+## Questions
 Describe Krutchen’s 4+1 View Model of a software architecture. Explain how it captures the complete behavior of a developed software from multiple perspectives of the system. How is this model aligned with the UML models?
 
 What is a software architecture? Describe the importance of software architecture when developing a system. What are the software architecture design guidelines? What are the architectural styles? Give an example of an architectural style and describe it in detail.

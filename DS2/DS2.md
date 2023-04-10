@@ -1,8 +1,10 @@
-# Topics
+# DS2
+
+## Topics
 Big Data concept, basic principles of distributed data processing, types and properties of
 NoSQL databases. BE4M36DS2 (Course web pages)
 
-# Questions
+## Questions
 Big Data (V characteristics, current trends), NoSQL databases (motivation, features). Scaling (vertical, horizontal, network fallacies, cluster). Distribution models (sharding, replication, master-slave and peer-to-peer architectures). CAP theorem (properties, ACID, BASE). Consistency (strong, eventual, read, write, quora). Performance tuning (Amdahl’s law, Little’s law, message cost model). Polyglot persistence.
 
 MapReduce (architecture, functions, data flow, execution, use cases). Hadoop (MapReduce, HDFS).

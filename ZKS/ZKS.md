@@ -1,7 +1,9 @@
-# Topics
+# ZKS
+
+## Topics
 The methodology of software testing. Methods for test creation from the application model. Automated testing. BE4M36ZKS (Course web pages)
 
-# Questions
+## Questions
 Describe and compare the V and W models of the software testing process. Explain static testing and its role in the W model. Describe individual methods of static testing.
 
 Explain the principle of Model Based Testing (MBT) and compare its advantages and disadvantages with manual testing approach. Give some examples of models that can be employed in MBT. How does MBT relate to test automation?

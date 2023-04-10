@@ -1,10 +1,11 @@
-# Topics
-# Questions
+# PAL
+
+## Topics
 Polynomial algorithms for standard graph problems. Combinatorial and number-theoretical
 algorithms, isomorphism, prime numbers. Search trees and their use. Text search based
 on finite automata.
 
-# Questions
+## Questions
 Notation of asymptotic complexity of algorithms. Basic notation of graph problems - degree, path, circuit, cycle. Graph representations by adjacency, distance, Laplacian and incidence matrices. Adjacency list representation.
 
 Algorithms for minimum spanning tree (Prim-Jarník, Kruskal, Borůvka), strongly connected components (Kosaraju-Sharir, Tarjan), Euler trail. Union-find problem. Graph isomorphism, tree isomorphism.

@@ -1,8 +1,10 @@
-# Topics
+# BSY
+
+## Topics
 Security analysis of operating systems, development of secure software and web applications security. Analysis of cyberattacks and malware. Security of mobile devices.
 BE4M36BSY (Course web pages)
 
-# Questions
+## Questions
 Managing a software project with a security as an objective, advantages and disadvantages of waterfall and ellipse model for this use-case, systematic identification of potential vulnerabilities, STRIDE, attack modelling (attack trees), ranking of vulnerabilities (ideal, DREAD).
 
 Timing and storage covert channels, Side channel attacks, Steganography.
