@@ -39,5 +39,5 @@ jobs:
         with:
           file: output.pdf
           asset_name: oi-si-statnice.pdf
-          release_name: Release 🚀💾
+          release_name: Release
           overwrite: true
