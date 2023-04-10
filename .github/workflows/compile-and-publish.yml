@@ -19,7 +19,7 @@ jobs:
   build:
     runs-on: ubuntu-latest
     container:
-      image: pandoc/latex
+      image: pandoc/extra
 
     # Steps represent a sequence of tasks that will be executed as part of the job
     steps:
