@@ -41,7 +41,7 @@ jobs:
           overwrite: true
           
       - name: Compile Markdown to PDF
-        run: find . -type f -iname "*.md" -exec pandoc --template=eisvogel.tex -o output.html -s {} +
+        run: find . -type f -iname "*.md" -exec pandoc --template=eisvogel.tex -o output.html --metadata title="OI - SI - Státnicové okruhy" -s {} +
           
       - name: Deploy GitHub Pages site
         uses: actions/deploy-pages@v2.0.0
