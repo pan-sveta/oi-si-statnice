@@ -142,6 +142,7 @@ Disadvantages:
    - Exploiting vulnerabilities to gain unauthorized access or privileges
    - Examples: Privilege escalation, bypassing access controls, exploiting software flaws
    - Mitigation: Principle of least privilege, secure coding practices, regular patching and updates
+
 ### Attack modelling (attack trees)
 - *Definition*: A graphical, hierarchical method for systematically analyzing and representing potential attacks on a system or application
 - *Purpose*: To identify, evaluate, and prioritize threats, and to develop strategies to mitigate or eliminate them
@@ -170,8 +171,6 @@ Disadvantages:
 - Provides a basis for prioritizing security investments and efforts
 
 ### Ranking of vulnerabilities (ideal, DREAD)
-
-**Ranking of Vulnerabilities (Ideal, DREAD)**:
 
 - *Purpose*: To prioritize vulnerabilities based on their potential impact, likelihood, and severity, in order to allocate resources and efforts effectively
 
@@ -274,11 +273,13 @@ These limitations have led to the development of alternative risk assessment mod
 
 ### Discretionary access control(Access control list, Capabilities)
 **Discretionary Access Control (DAC)**:
+
 - *Definition*: Access control model where resource owners decide access permissions for other users
 - *Key Features*: Flexibility, user-driven access management, based on user identity and/or group membership
 - *Potential Risks*: Information leakage, unauthorized access, dependency on user's discretion
 
 **Access Control List (ACL)**:
+
 - *Definition*: List of access permissions attached to a resource, specifying which users or groups can perform actions
 - *Components*: Resource, user/group, action (e.g., read, write, execute), access rule (allow/deny)
 - *Implementation*: File systems, databases, network devices
@@ -286,6 +287,7 @@ These limitations have led to the development of alternative risk assessment mod
 - *Challenges*: Scalability, complexity, maintaining consistency
 
 **Capabilities**:
+
 - *Definition*: Token-based system where users possess tokens that grant them access to specific resources or actions
 - *Components*: Token (represents access right), resource, action
 - *Implementation*: Object-oriented systems, some operating systems, microkernel architecture
