@@ -218,10 +218,13 @@ These limitations have led to the development of alternative risk assessment mod
 - *Definition*: Exploit timing of events or processes for secret communication
 - *Encoding*: Sender and receiver agree on time-based encoding
 - *Examples*:
+  
   1. **Inter-packet delays**: Manipulate time intervals between network packets
   2. **CPU usage**: Vary usage to create encoding pattern
   3. **Response time**: Influence service or resource response time
+   
 - *Mitigation techniques*:
+  
   1. Traffic shaping
   2. Regularizing event timings
   3. Monitoring unusual timing patterns
@@ -230,10 +233,12 @@ These limitations have led to the development of alternative risk assessment mod
 - *Definition*: Use shared storage resources to encode/transfer info secretly
 - *Encoding*: Sender alters shared resource, receiver observes changes
 - *Examples*:
+  
   1. **File content or metadata**: Modify shared file's content or metadata
   2. **Shared memory**: Write/read data in specific memory location
   3. **Database records**: Manipulate shared records or tables
 - *Mitigation techniques*:
+  
   1. Access control and monitoring
   2. Regular audits of shared resources
   3. Anomaly detection and data integrity checks
@@ -242,30 +247,37 @@ These limitations have led to the development of alternative risk assessment mod
 - *Definition*: Exploit unintentional information leakage from a system to break security or encryption
 - *Information Sources*: Physical characteristics or implementation details
 - *Examples*:
+  
   1. **Timing attacks**: Analyze time taken to perform cryptographic operations
   2. **Power analysis attacks**: Monitor power consumption patterns
   3. **Electromagnetic attacks**: Capture emitted electromagnetic signals
   4. **Acoustic attacks**: Record sounds produced by a system's components
   5. **Cache attacks**: Exploit access patterns of shared memory caches
+   
 - *Targets*: Cryptographic systems, secure hardware, secure communication channels
 - *Mitigation techniques*:
+  
   1. Constant-time implementations
   2. Randomizing execution time or power consumption
   3. Shielding or isolation of sensitive components
   4. Noise generation to mask true signals
   5. Regular security audits and updates
+   
 ### Steganography
 - *Definition*: Concealing information within other non-secret data or media
 - *Goal*: Hide existence of secret communication, unlike cryptography which focuses on protecting content
 - *Common Techniques*:
+  
   1. **Image steganography**: Embed secret data within image pixels, colors, or formats
   2. **Audio steganography**: Hide data in audio files using frequencies, amplitudes, or noise
   3. **Text steganography**: Conceal information within text using spaces, characters, or formatting
   4. **Video steganography**: Encode data within video frames or compression artifacts
   5. **Network steganography**: Use network protocols, headers, or packet timing to hide data
+  6. 
 - *Detection*: Steganalysis techniques, statistical analysis, or machine learning algorithms
 - *Uses*: Secure communication, watermarking, covert channels, espionage
 - *Mitigation techniques*:
+  
   1. Access control and monitoring
   2. Regular audits of data and media
   3. Anomaly detection and content filtering
