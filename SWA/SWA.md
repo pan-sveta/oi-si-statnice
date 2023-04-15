@@ -7,7 +7,8 @@ styles and standards. BE4M36SWA (Course web pages)
 ## Questions
 ### Describe Krutchen's 4+1 View Model of a software architecture. Explain how it captures the complete behavior of a developed software from multiple perspectives of the system. How is this model aligned with the UML models?
 
-#### Popis Krutchenova 4+1 View Modelu softwarové architektury:
+
+**Popis Krutchenova 4+1 View Modelu softwarové architektury:**
 
    - Pohled logický (Logical View):
      - Zobrazuje třídy, objekty, rozhraní a jejich vztahy
@@ -25,7 +26,7 @@ styles and standards. BE4M36SWA (Course web pages)
      - Uplatňuje se pro ověření a validaci návrhu architektury
      - Pomáhá provést průřez všemi čtyřmi pohledy
 
-#### Jak 4+1 View Model zachycuje chování softwaru z různých perspektiv:
+**Jak 4+1 View Model zachycuje chování softwaru z různých perspektiv:**
 
    - A. Logický pohled (Logical View):
       - Poskytuje abstraktní pohled na systém z hlediska funkčnosti
@@ -57,9 +58,9 @@ styles and standards. BE4M36SWA (Course web pages)
       - Pomáhají identifikovat problémy a nedostatky v návrhu
       - Slouží k provádění průřezů mezi všemi čtyřmi pohledy a k integraci různých aspektů systému
 
-#### Souvislost mezi 4+1 View Model a UML modely:
+**Souvislost mezi 4+1 View Model a UML modely:**
 
-UML diagramy pro 4+1 View Model:
+**UML diagramy pro 4+1 View Model:**
 
 1. Logický pohled (Logical View):
     - Třídní diagram (Class Diagram)
@@ -82,13 +83,15 @@ UML diagramy pro 4+1 View Model:
     - Balíčkový diagram (Package Diagram)
     - Diagram komponent (Component Diagram)
 
-Integrace UML s 4+1 View Model:
+**Integrace UML s 4+1 View Model:**
+
     - UML diagramy poskytují vizuální reprezentaci pro každý pohled v 4+1 View Modelu
     - Umožňují efektivní komunikaci mezi architekty, vývojáři, testery a dalšími členy týmu
     - Podporují analýzu, návrh, implementaci a údržbu systému
     - Usnadňují kontrolu a řízení kvality architektury
 
 ### What is a software architecture? Describe the importance of software architecture when developing a system. What are the software architecture design guidelines? What are the architectural styles? Give an example of an architectural style and describe it in detail.
+
 
 **Co je softwarová architektura?**
 
@@ -152,6 +155,7 @@ Integrace UML s 4+1 View Model:
 
 #### What is a design pattern? What problem are design patterns solving? What types of design patterns exist? Why is it important to know the design patterns? Are there design antipatterns?
 
+
 **Co je návrhový vzor (design pattern)?**
 
 - Návrhový vzor je **opakovatelné řešení** pro často se vyskytující problémy v oblasti softwarového návrhu.
@@ -195,6 +199,7 @@ Integrace UML s 4+1 View Model:
 - Je důležité rozpoznat a vyhýbat se návrhovým antivzorům, aby byla zajištěna dobrá kvalita kódu a efektivní vývoj.
 
 #### What is a microservice architecture? What are its advantages and disadvantages compared to a monolithic architecture. How is microservices development different from developing a monolithic application? Are there any methodologies or guidelines or best practices to follow when developing microservices? Obviously, there are patterns that can be applied in this area, are there any antipatterns that should be avoided?
+
 
 **Co je mikroservisní architektura?**
 
@@ -291,6 +296,7 @@ Integrace UML s 4+1 View Model:
     - Špatně zdokumentované nebo nekomunikované změny mohou vést k nedorozuměním a chybám mezi týmy.
 
 #### Software architects can choose one architecture over another. The choice may affect the quality of the final product. Can you tell if one architecture is better than another or if one architecture is bad while the other is not? How can you measure the quality of an architecture? Can you measure the quality from different perspectives?
+
 
 Při výběru softwarové architektury je těžké říci, že jedna architektura je obecně lepší než druhá, protože jejich vhodnost závisí na konkrétních požadavcích a omezeních projektu. Při výběru architektury je důležité zvážit následující faktory:
 
