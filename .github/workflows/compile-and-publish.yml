@@ -35,7 +35,7 @@ jobs:
         run: wget https://raw.githubusercontent.com/Wandmalfarbe/pandoc-latex-template/master/eisvogel.tex
 
       - name: Compile Markdown to PDF
-        run: pandoc -o output.pdf -f markdown+rebase_relative_paths --template=eisvogel.tex -s BSY/BSY.md DS2/DS2.md ESW/ESW.md KO/KO.md PAG/PAG.md PAL/PAL.md SWA/SWA.md TAL/TAL.md ZKS/ZKS.md document.md
+        run: pandoc -o output.pdf -f markdown+rebase_relative_paths --template=eisvogel.tex --pdf-engine=xelatex -s BSY/BSY.md DS2/DS2.md ESW/ESW.md KO/KO.md PAG/PAG.md PAL/PAL.md SWA/SWA.md TAL/TAL.md ZKS/ZKS.md document.md
         
       - name: Upload files to a GitHub release
         uses: svenstaro/upload-release-action@2.5.0
