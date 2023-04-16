@@ -5,9 +5,12 @@ Big Data concept, basic principles of distributed data processing, types and pro
 NoSQL databases. BE4M36DS2 (Course web pages)
 
 ## Questions
-### Big Data (V characteristics, current trends), NoSQL databases (motivation, features). Scaling (vertical, horizontal, network fallacies, cluster). Distribution models (sharding, replication, master-slave and peer-to-peer architectures). CAP theorem (properties, ACID, BASE). Consistency (strong, eventual, read, write, quora). Performance tuning (AmdahlвЂ™s law, LittleвЂ™s law, message cost model). Polyglot persistence.
+- Big Data (V characteristics, current trends), NoSQL databases (motivation, features). Scaling (vertical, horizontal, network fallacies, cluster). Distribution models (sharding, replication, master-slave and peer-to-peer architectures). CAP theorem (properties, ACID, BASE). Consistency (strong, eventual, read, write, quora). Performance tuning (AmdahlвЂ™s law, LittleвЂ™s law, message cost model). Polyglot persistence.
+- XPath (path expressions, axes, node tests, predicates). XQuery (constructors, FLWOR, conditional, quantified and comparison expressions). SPARQL (subgraph matching, graph patterns, datasets, filters, solution modifiers, query forms).
+- RiakKV (CRUD operations, links, link walking, convergent replicated data types, Search 2.0, vector clocks, Riak Ring, replica placement strategy). Redis (data types, operations, TTL). Cassandra (keyspaces, column families, CRUD operations). MongoDB (CRUD operations, update and query operators, projection, modifiers).
+- Graph data structures (adjacency matrix, adjacency list, incidence matrix). Data locality (BFS layout, bandwidth minimization problem, Cuthill-McKee algorithm). Graph partitioning (1D partitioning, 2D partitioning). Neo4j (traversal framework, traversal description, traverser). Cypher (graph matching, read, write and general clauses).
 
-**Big Data:**
+## Big Data:## 
 - 5 V charakteristiky:
   1. Objem (Volume): obrovské množství dat
   2. Rychlost (Velocity): rychlé generování a zpracování dat
@@ -21,7 +24,7 @@ NoSQL databases. BE4M36DS2 (Course web pages)
   - Internet věcí (IoT) a chytrá města
   - Zpracování a analýza reálných časových dat
 
-**NoSQL databáze:**
+## NoSQL databáze:
 - Motivace:
   - Potřeba zpracovávat velké objemy nestrukturovaných dat
   - Rychlost a škálovatelnost
@@ -34,7 +37,7 @@ NoSQL databases. BE4M36DS2 (Course web pages)
   - Eventuální konzistence: ochota obětovat striktní konzistenci za rychlost a škálovatelnost
   - Snadná a rychlá integrace s Big Data aplikacemi
 
-**Škálování:**
+## Škálování:
 - Vertikální škálování:
   - Přidávání zdrojů (CPU, paměť, úložiště) do jednoho serveru
   - Omezení: fyzické limity serveru, vyšší cena, možný výpadek v provozu
@@ -43,14 +46,14 @@ NoSQL databases. BE4M36DS2 (Course web pages)
   - Výhody: lepší výkonnost, tolerance k výpadkům, snadné přidání dalších serverů
   - Nevýhody: složitější správa, potřeba distribuovaných systémů
 
-**Síťové klamání (Network Fallacies):**
+## Síťové klamání (Network Fallacies):
 1. Spolehlivost sítě
 2. Nulová latence
 3. Nekonečná šířka pásma
 4. Bezpečná síť
 5. Homogenita sítě
 
-**Cluster (shluk):**
+## Cluster (shluk):
 - Skupina propojených serverů pracujících společně jako jeden systém
 - Výhody:
   - Zvýšení výkonnosti a zátěžové kapacity
@@ -60,7 +63,7 @@ NoSQL databases. BE4M36DS2 (Course web pages)
   - Složitější správa a konfigurace
   - Vyšší náklady na hardware a software
 
-**Distribuční modely:**
+## Distribuční modely:
 - Sharding:
   - Rozdělení dat do menších částí (shard) a uložení na různých serverech
   - Výhody: zvýšení výkonnosti, snížení zátěže, snadné škálování
@@ -70,7 +73,7 @@ NoSQL databases. BE4M36DS2 (Course web pages)
   - Výhody: zvýšení odolnosti vůči výpadkům, snížení zátěže
   - Nevýhody: zvýšení nákladů na úložiště, režie při synchronizaci dat
 
-**Architektury:**
+## Architektury:
 - Master-Slave:
   - Jeden hlavní server (master) a jeden nebo více záložních serverů (slave)
   - Master: spravuje zápis dat, synchronizuje s Slave servery
@@ -83,28 +86,28 @@ NoSQL databases. BE4M36DS2 (Course web pages)
   - Výhody: škálovatelnost, odolnost vůči výpadkům, decentralizace
   - Nevýhody: složitější správa, zvýšená režie při komunikaci mezi uzly
 
-**CAP věta:**
+## CAP věta:
 - Vlastnosti:
   1. Konzistence (Consistency): každý uzel v síti vidí stejná data
   2. Dostupnost (Availability): každý dotaz na systém dostane odpověď
   3. Tolerance k rozdělení (Partition Tolerance): systém funguje i při výpadcích části sítě
 - CAP věta: v distribuovaném systému nelze zaručit všechny tři vlastnosti současně, pouze dvě z nich
 
-**ACID:**
+## ACID:
 - Vlastnosti transakcí v tradičních (SQL) databázích:
   1. Atomicita (Atomicity): transakce je buď celá provedena nebo vůbec
   2. Konzistence (Consistency): databáze zůstane konzistentní po každé transakci
   3. Izolace (Isolation): paralelní transakce se neovlivňují navzájem
   4. Trvanlivost (Durability): potvrzené transakce jsou trvale uloženy
 
-**BASE:**
+## BASE:
 - Vlastnosti transakcí v NoSQL databázích:
   1. Základní dostupnost (Basically Available): systém je dostupný i při výpadcích části sítě
   2. Měkká stavovost (Soft State): stav systému se může měnit časem, i bez vstupu
   3. Eventuální konzistence (Eventual Consistency): konzistence dat je zaručena po určitém čase
 - BASE je obětování konzistence za dostupnost a toleranci k rozdělení (oproti ACID)
 
-**Konzistence:**
+## Konzistence:
 - Silná konzistence (Strong Consistency):
   - Každý čtenář vidí nejnovější zápis nebo chybu
   - Zaručuje, že všechny uzly v distribuovaném systému zobrazují stejná data
@@ -115,20 +118,20 @@ NoSQL databases. BE4M36DS2 (Course web pages)
   - Výhody: rychlost, škálovatelnost, flexibilita
   - Používáno v NoSQL databázích a BASE systémech
 
-**Konzistence čtení a zápisu:**
+## Konzistence čtení a zápisu:
 - Čtenářská konzistence (Read Consistency):
   - Zajišťuje, že čtenář vidí data konzistentní s posledním zápisem
 - Zápisová konzistence (Write Consistency):
   - Zajišťuje, že zápis dat je proveden konzistentně napříč všemi uzly
 
-**Kvóra (Quorum):**
+## Kvóra (Quorum):
 - Mechanismus pro dosažení konzistence v distribuovaných systémech
 - Založeno na hlasování uzlů pro potvrzení čtení a zápisu
 - R > W: silná konzistence čtení, slabá konzistence zápisu
 - W > R: slabá konzistence čtení, silná konzistence zápisu
 - R + W > N: silná konzistence čtení i zápisu, kde N je počet uzlů
 
-**Optimalizace výkonu:**
+## Optimalizace výkonu:
 
 - Amdahlův zákon:
   - Popisuje vliv paralelizace na zrychlení výpočtu
@@ -157,7 +160,7 @@ NoSQL databases. BE4M36DS2 (Course web pages)
 
 MapReduce (architecture, functions, data flow, execution, use cases). Hadoop (MapReduce, HDFS).
 
-**MapReduce:**
+## MapReduce:
 - Architektura:
   - Programovací model pro paralelní a distribuované zpracování velkého množství dat
   - Skládá se ze dvou hlavních funkcí: Map a Reduce
@@ -183,18 +186,18 @@ MapReduce (architecture, functions, data flow, execution, use cases). Hadoop (Ma
   - Vyhledávání vzorů v datech
   - Strojové učení a statistické analýzy
 
-**Hadoop:**
+## Hadoop:
 - Open-source framework pro distribuované zpracování velkého množství dat
 - Hlavní komponenty:
   1. Hadoop MapReduce
   2. Hadoop Distributed File System (HDFS)
 
-**Hadoop MapReduce:**
+## Hadoop MapReduce:
 - Implementace MapReduce modelu pro zpracování dat v Hadoopu
 - Řídí paralelní zpracování dat pomocí map a reduce funkcí
 - Podporuje škálování, odolnost vůči výpadkům a distribuci dat
 
-**HDFS - Hadoop Distributed File System:**
+## HDFS - Hadoop Distributed File System:
 
 - Hlavní komponenty HDFS:
   1. NameNode
@@ -225,11 +228,7 @@ MapReduce (architecture, functions, data flow, execution, use cases). Hadoop (Ma
   3. Vysokou propustnost a odolnost vůči výpadkům
   4. Integraci s Hadoop MapReduce pro efektivní zpracování dat
 
-
-### XPath (path expressions, axes, node tests, predicates). XQuery (constructors, FLWOR, conditional, quantified and comparison expressions). SPARQL (subgraph matching, graph patterns, datasets, filters, solution modifiers, query forms).
-
-
-**XPath**
+## XPath
 
 - XPath
   - Cesta vyjadřuje umístění uzlů v XML dokumentu
@@ -253,7 +252,7 @@ MapReduce (architecture, functions, data flow, execution, use cases). Hadoop (Ma
   - Uzavírají se do hranatých závorek (např. `/kniha[nazev='Mistr a Markétka']`)
   - Často se používají s operátory a funkcemi (např. `not()`, `and`, `or`)
 
-**XQuery**
+## XQuery
 
 - XQuery
   - Jazyk pro dotazování a manipulaci s XML a JSON dokumenty
@@ -280,7 +279,7 @@ MapReduce (architecture, functions, data flow, execution, use cases). Hadoop (Ma
   - '=', '!=', '<', '>', '<=', '>='
   - 'eq', 'ne', 'lt', 'gt', 'le', 'ge'
 
-**SPARQL**
+## SPARQL
 
 - SPARQL
   - Jazyk pro dotazování a manipulaci s RDF grafovými daty
@@ -309,9 +308,7 @@ MapReduce (architecture, functions, data flow, execution, use cases). Hadoop (Ma
   - ASK: Dotaz na existenci vzoru
   - DESCRIBE: Popis zdrojů RDF
 
-### RiakKV (CRUD operations, links, link walking, convergent replicated data types, Search 2.0, vector clocks, Riak Ring, replica placement strategy). Redis (data types, operations, TTL). Cassandra (keyspaces, column families, CRUD operations). MongoDB (CRUD operations, update and query operators, projection, modifiers).
-
-**RiakKV**
+## RiakKV
 
 - RiakKV
   - Distribuovaný klíč-hodnota úložiště
@@ -345,7 +342,7 @@ MapReduce (architecture, functions, data flow, execution, use cases). Hadoop (Ma
 
 ![RiakKV Ring](riak-ring.png)
 
-**Redis**
+## Redis
 
 - Redis
   - Výkonný klíč-hodnota úložiště v paměti
@@ -370,7 +367,7 @@ MapReduce (architecture, functions, data flow, execution, use cases). Hadoop (Ma
   - EXPIRE, PEXPIRE: Nastavení TTL pro existující klíč
   - TTL, PTTL: Získání zbývajícího času do expirace
 
-**Cassandra**
+## Cassandra
 
 - Cassandra
   - Distribuovaná databáze s vysokou škálovatelností a dostupností
@@ -388,7 +385,7 @@ MapReduce (architecture, functions, data flow, execution, use cases). Hadoop (Ma
   - UPDATE: Aktualizace záznamu
   - DELETE: Smazání záznamu nebo části záznamu
 
-**MongoDB**
+## MongoDB
 
 - MongoDB
   - Dokumentová databáze s vysokou škálovatelností a flexibilitou
@@ -420,10 +417,7 @@ MapReduce (architecture, functions, data flow, execution, use cases). Hadoop (Ma
   - $skip: Přeskočení určitého počtu dokumentů
   - $sort: Řazení dokumentů podle zadaných kritérií
 
-
-### Graph data structures (adjacency matrix, adjacency list, incidence matrix). Data locality (BFS layout, bandwidth minimization problem, Cuthill-McKee algorithm). Graph partitioning (1D partitioning, 2D partitioning). Neo4j (traversal framework, traversal description, traverser). Cypher (graph matching, read, write and general clauses).
-
-**Grafové datové struktury**
+## Grafové datové struktury
 
 - Grafové datové struktury
   - Používány pro reprezentaci grafů (sítí, diagramů) v paměti počítače
@@ -459,7 +453,7 @@ MapReduce (architecture, functions, data flow, execution, use cases). Hadoop (Ma
     - Vyšší paměťová náročnost než seznam sousednosti
     - Pomalejší procházení sousedů daného vrcholu
 
-**Data locality**
+## Data locality
 
 - Data locality
   - Optimalizace přístupu k datům v počítačové paměti
@@ -485,7 +479,7 @@ MapReduce (architecture, functions, data flow, execution, use cases). Hadoop (Ma
   - Nevýhody:
     - Ne vždy najde optimální řešení
 
-**Graph partitioning**
+## Graph partitioning
 
 - Grafové rozdělení (Graph partitioning)
   - Proces rozdělení grafu na menší části (partice) s cílem optimalizovat výkon
@@ -510,7 +504,7 @@ MapReduce (architecture, functions, data flow, execution, use cases). Hadoop (Ma
     - Složitější implementace
     - Vyšší režie při komunikaci mezi procesory nebo uzly
 
-**Neo4j**
+## Neo4j
 
 - Neo4j
   - Grafická databáze s vysokou škálovatelností a flexibilitou
@@ -531,7 +525,7 @@ MapReduce (architecture, functions, data flow, execution, use cases). Hadoop (Ma
   - Vrací výsledné vrcholy a hrany, které splňují zadaná pravidla
   - Umožňuje iterativní přístup k výsledkům průchodu
 
-**Cypher**
+## Cypher
 
 - Cypher
   - Deklarativní jazyk pro práci s grafy v Neo4j

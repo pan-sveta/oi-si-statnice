@@ -4,10 +4,14 @@
 The methodology of software testing. Methods for test creation from the application model. Automated testing. BE4M36ZKS (Course web pages)
 
 ## Questions
-### Describe and compare the V and W models of the software testing process. Explain static testing and its role in the W model. Describe individual methods of static testing.
+- Describe and compare the V and W models of the software testing process. Explain static testing and its role in the W model. Describe individual methods of static testing.
+- Explain the principle of Model Based Testing (MBT) and compare its advantages and disadvantages with manual testing approach. Give some examples of models that can be employed in MBT. How does MBT relate to test automation?
+- Outline the main test automation principle and economics. What are possible levels at which tests can be automated? Give some examples of main approaches and technologies that can be used in software test automation.
+- Explain the equivalence class and boundary values concepts and principle of the Combinatorial Interaction Testing. What is a combinatorial explosion effect, how to effectively reduce the input data combinations? Principle of pairwise (2-way) and N-way testing.
+- Principle of path-based testing. Formal definition of system model and test coverage criteria (node/edge coverage, edge-pair coverage, prime-path coverage). How prioritization of process/workflow activities is modelled and handled in the generation of the test cases?
 
 
-**V-model:**
+## V-model:
 - Lineární model
 - Testování je prováděno na konci vývojového procesu
 - Fáze:
@@ -23,7 +27,7 @@ The methodology of software testing. Methods for test creation from the applicat
   - Méně flexibilní než W-model
   - Změny v požadavcích mohou způsobit zpoždění a náklady
 
-**W-model:**
+## W-model:
 - Iterativní model
 - Testování je prováděno během celého vývojového procesu
 - Fáze:
@@ -40,15 +44,15 @@ The methodology of software testing. Methods for test creation from the applicat
   - Snadnější detekce a řešení problémů v průběhu vývoje
   - Změny v požadavcích méně pravděpodobně způsobí zpoždění a náklady
 
-**Srovnání V-modelu a W-modelu:**
+## Srovnání V-modelu a W-modelu:
 - V-model je lineární a méně flexibilní
 - W-model je iterativní a flexibilnější
 - V-model provádí testování až na konci vývoje
 - W-model provádí testování během celého vývoje
 
-**Statické testování a jeho role ve W-modelu:**
+## Statické testování a jeho role ve W-modelu:
 
-**Statické testování:**
+## Statické testování:
 - Testování softwaru bez spuštění kódu
 - Zaměřuje se na kontrolu kódu, dokumentace a dalších artefaktů
 - Techniky statického testování:
@@ -58,14 +62,14 @@ The methodology of software testing. Methods for test creation from the applicat
   - Průzkum návrhu (Design review)
   - Kontrola požadavků (Requirements review)
 
-**Role ve W-modelu:**
+## Role ve W-modelu:
 - Statické testování je důležitou součástí W-modelu
 - Provádí se během celého vývojového procesu, nejen v testovací fázi
 - Pomáhá detekovat a řešit problémy v kódu a dokumentaci dříve
 - Redukuje riziko chyb a náklady spojené s opravami
 - Přispívá k vyšší kvalitě softwaru
 
-**Individuální metody statického testování:**
+## Individuální metody statického testování:
 
 1. Průzkum kódu (Code review):
    - Manuální kontrola zdrojového kódu
@@ -92,34 +96,31 @@ The methodology of software testing. Methods for test creation from the applicat
    - Ověření správnosti, úplnosti a srozumitelnosti požadavků
    - Hledání možných konfliktů, nejasností nebo nekonzistencí
 
-### Explain the principle of Model Based Testing (MBT) and compare its advantages and disadvantages with manual testing approach. Give some examples of models that can be employed in MBT. How does MBT relate to test automation?
-
-
-**Manuální testování:**
+## Manuální testování:
 - Testování prováděné lidským testérem
 - Testér kontroluje systém nebo aplikaci podle testovacích scénářů
 - Zahrnuje funkční, UI a uživatelský zážitek testování
 
-**Model Based Testing (MBT):**
+## Model Based Testing (MBT):
 - Testování založené na modelech
 - Vytvoření abstraktního modelu systému nebo aplikace
 - Generování testovacích případů z modelu pomocí algoritmů a nástrojů
 - Automatická tvorba a provádění testů
 
-**Výhody MBT oproti manuálnímu testování:**
+## Výhody MBT oproti manuálnímu testování:
 - Rychlejší generování testovacích případů
 - Vyšší pokrytí testů díky systematickému přístupu
 - Snížení lidských chyb při tvorbě a provádění testů
 - Lehčí aktualizace testů při změnách v systému nebo požadavcích
 - Úspora času a nákladů na vývoj
 
-**Nevýhody MBT oproti manuálnímu testování:**
+## Nevýhody MBT oproti manuálnímu testování:
 - Vyšší počáteční náklady na vytvoření a udržbu modelu
 - Nutnost specializovaných znalostí a nástrojů pro MBT
 - Možné omezení v modelování složitých nebo nestandardních situací
 - Menší vhodnost pro testování UI nebo uživatelského zážitku
 
-**Příklady modelů použitelných v Model Based Testing (MBT):**
+## Příklady modelů použitelných v Model Based Testing (MBT):
 
 1. Konečný automat (Finite State Machine, FSM):
    - Model založený na stavech a přechodech mezi nimi
@@ -144,7 +145,7 @@ The methodology of software testing. Methods for test creation from the applicat
    - Modely zaměřené na strukturu a vztahy mezi daty v systému
    - Použitelné pro testování datových operací, jako je ukládání, načítání a zpracování dat
 
-**Vztah MBT k automatickému testování:**
+## Vztah MBT k automatickému testování:
 - MBT je způsob, jak generovat testovací scénáře a případy z modelů systému
 - Automatické testování je proces spouštění těchto testovacích případů bez lidské interakce
 - MBT a automatické testování se často používají společně:
@@ -152,23 +153,20 @@ The methodology of software testing. Methods for test creation from the applicat
   - Automatické testování provádí tyto testovací případy
   - Tím se zvyšuje efektivita, rychlost a přesnost testování
 
-### Outline the main test automation principle and economics. What are possible levels at which tests can be automated? Give some examples of main approaches and technologies that can be used in software test automation.
-
-
-**Principy automatizace testování:**
+## Principy automatizace testování:
 - Snížení lidského úsilí při provádění testů
 - Zvýšení rychlosti a přesnosti testování
 - Systematický a konzistentní přístup k testování
 - Snížení rizika lidských chyb
 - Možnost častějšího a průběžného testování
 
-**Ekonomika automatizace testování:**
+## Ekonomika automatizace testování:
 - Vyšší počáteční náklady na nástroje a přípravu testů
 - Nižší náklady na provádění testů dlouhodobě
 - Snížení nákladů na opravy chyb díky dřívějšímu odhalení
 - Rychlejší nasazení a aktualizace softwaru
 
-**Úrovně automatizace testů:**
+## Úrovně automatizace testů:
 1. Jednotkové testy (Unit tests):
    - Automatické testování jednotlivých funkcí nebo tříd
    - Zajišťují, že jednotlivé komponenty fungují správně
@@ -189,7 +187,7 @@ The methodology of software testing. Methods for test creation from the applicat
    - Automatické testování zaměřené na odhalení chyb po změnách v kódu
    - Kontrolují, že nové změny nezpůsobily problémy v již otestovaných částech
 
-**Příklady hlavních přístupů a technologií používaných v automatizaci testování softwaru:**
+## Příklady hlavních přístupů a technologií používaných v automatizaci testování softwaru:
 
 1. Nástroje pro jednotkové testování (Unit testing tools):
    - JUnit (pro Java)
@@ -230,23 +228,20 @@ The methodology of software testing. Methods for test creation from the applicat
    - Katalon Studio
    - Umožňují nahrát testovací scénáře při manuálním provádění testu a poté je automaticky přehrát
 
-### Explain the equivalence class and boundary values concepts and principle of the Combinatorial Interaction Testing. What is a combinatorial explosion effect, how to effectively reduce the input data combinations? Principle of pairwise (2-way) and N-way testing.
-
-
-**Ekvivalentní třída (Equivalence Class):**
+## Ekvivalentní třída (Equivalence Class):
 - Koncept založený na rozdělení vstupních hodnot do skupin, které vykazují podobné chování
 - Každá skupina se nazývá ekvivalentní třída
 - Testování se provádí na základě reprezentativního vzorku hodnot z každé třídy
 - Účinně snižuje počet testovacích případů, aniž by se snížila účinnost testování
 
-**Hraniční hodnoty (Boundary Values):**
+## Hraniční hodnoty (Boundary Values):
 - Koncept zaměřený na testování hodnot na hranicích ekvivalentních tříd
 - Hraniční hodnoty často zahrnují:
   - Minimální a maximální hodnoty
   - Hodnoty těsně nad a pod minimálními a maximálními hodnotami
 - Testování hraničních hodnot je založeno na pozorování, že chyby se často vyskytují u hranic ekvivalentních tříd
 
-**Kombinatorické interakční testování (Combinatorial Interaction Testing):**
+## Kombinatorické interakční testování (Combinatorial Interaction Testing):
 - Princip spočívá v testování všech možných kombinací dvou nebo více proměnných
 - Zaměřuje se na odhalování chyb způsobených nečekanými interakcemi mezi proměnnými
 - Kombinatorické testování může být prováděno pomocí různých technik, jako je:
@@ -254,11 +249,11 @@ The methodology of software testing. Methods for test creation from the applicat
   - Orthogonal arrays (testování s omezeným počtem kombinací, které zahrnují všechny možné interakce)
 - Účinně snižuje počet testovacích případů, aniž by se snížila účinnost testování
 
-**Kombinatorický výbuch (Combinatorial Explosion):**
+## Kombinatorický výbuch (Combinatorial Explosion):
 - Efekt, kdy počet kombinací vstupních dat rychle roste s přibývajícím počtem proměnných nebo hodnot
 - Výsledkem je velký počet testovacích případů, což zvyšuje nároky na čas a zdroje při testování
 
-**Jak efektivně snížit kombinace vstupních dat:**
+## Jak efektivně snížit kombinace vstupních dat:
 
 1. Pairwise testing (dvojice testů):
    - Testování všech možných dvojic proměnných místo všech kombinací
@@ -280,7 +275,7 @@ The methodology of software testing. Methods for test creation from the applicat
    - Vytvoření matematického nebo formálního modelu systému a generování testovacích případů z tohoto modelu
    - Pomáhá snížit počet testovacích případů a současně zvyšuje účinnost testování
 
-**Pairwise (2-way) testing:**
+## Pairwise (2-way) testing:
 
 - Pairwise testing je technika kombinatorického testování, která zkoumá interakce mezi dvojicemi proměnných
 - Místo testování všech možných kombinací proměnných se zaměřuje na testování všech dvojic proměnných
@@ -288,7 +283,7 @@ The methodology of software testing. Methods for test creation from the applicat
 - Pairwise testing značně snižuje počet testovacích případů, aniž by se značně snížila účinnost testování
 - Nástroje, jako jsou AllPairs, PICT nebo Hexawise, mohou být použity pro generování pairwise testovacích případů
 
-**N-way testing:**
+## N-way testing:
 
 - N-way testing je rozšířením pairwise testingu, které zkoumá interakce mezi N proměnnými
 - Pro N > 2 se zvyšuje pokrytí interakcí mezi proměnnými, ale roste také počet testovacích případů
@@ -296,17 +291,14 @@ The methodology of software testing. Methods for test creation from the applicat
 - Volba hodnoty N závisí na rovnováze mezi potřebou pokrytí interakcí a omezením počtu testovacích případů
 - Nástroje, jako jsou AllPairs, PICT nebo Hexawise, mohou být také použity pro generování N-way testovacích případů s různými hodnotami
 
-### Principle of path-based testing. Formal definition of system model and test coverage criteria (node/edge coverage, edge-pair coverage, prime-path coverage). How prioritization of process/workflow activities is modelled and handled in the generation of the test cases?
-
-
-**Princip testování založeného na cestách (Path-based testing):**
+## Princip testování založeného na cestách (Path-based testing):
 
 - Testování založené na cestách je technika, která se zaměřuje na zkoumání různých cest (paths) v systému nebo algoritmu
 - Cesty jsou sledy uzlů (nodes) a hran (edges) v grafu reprezentujícím systém nebo algoritmus
 - Tato metoda se často používá při testování řídicích struktur kódu, jako jsou podmínky, cykly a větvení
 - Cílem je identifikovat a otestovat všechny možné cesty, aby se maximalizovala účinnost testování a odhalily chyby v kódu
 
-**Formální definice modelu systému a kritéria pokrytí testů:**
+## Formální definice modelu systému a kritéria pokrytí testů:
 
 1. Node (uzel) coverage:
    - Požadavek, aby každý uzel v grafu byl navštíven alespoň jednou během testování
@@ -328,7 +320,7 @@ The methodology of software testing. Methods for test creation from the applicat
    - Zaměřuje se na testování všech možných sledů uzlů a hran bez opakování
    - Poskytuje nejlepší pokrytí v porovnání s ostatními kritérii, ale s nejvyššími nároky na testovací případy
 
-**Prioritizace procesů/workflow aktivit při generování testovacích případů:**
+## Prioritizace procesů/workflow aktivit při generování testovacích případů:
 
 1. Analýza rizik:
    - Identifikace oblastí s nejvyšším rizikem chyb nebo dopadů na systém

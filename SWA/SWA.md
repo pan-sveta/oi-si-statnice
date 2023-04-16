@@ -5,10 +5,14 @@ Software architectures, their parameters and qualitative metrics. Architectural 
 styles and standards. BE4M36SWA (Course web pages)
 
 ## Questions
-### Describe Krutchen's 4+1 View Model of a software architecture. Explain how it captures the complete behavior of a developed software from multiple perspectives of the system. How is this model aligned with the UML models?
+- Describe Krutchen's 4+1 View Model of a software architecture. Explain how it captures the complete behavior of a developed software from multiple perspectives of the system. How is this model aligned with the UML models?
+- What is a software architecture? Describe the importance of software architecture when developing a system. What are the software architecture design guidelines? What are the architectural styles? Give an example of an architectural style and describe it in detail.
+- What is a design pattern? What problem are design patterns solving? What types of design patterns exist? Why is it important to know the design patterns? Are there design antipatterns?
+- What is a microservice architecture? What are its advantages and disadvantages compared to a monolithic architecture. How is microservices development different from developing a monolithic application? Are there any methodologies or guidelines or best practices to follow when developing microservices? Obviously, there are patterns that can be applied in this area, are there any antipatterns that should be avoided?
+- Software architects can choose one architecture over another. The choice may affect the quality of the final product. Can you tell if one architecture is better than another or if one architecture is bad while the other is not? How can you measure the quality of an architecture? Can you measure the quality from different perspectives?
 
 
-**Popis Krutchenova 4+1 View Modelu softwarové architektury:**
+## Popis Krutchenova 4+1 View Modelu softwarové architektury:
 
    - Pohled logický (Logical View):
      - Zobrazuje třídy, objekty, rozhraní a jejich vztahy
@@ -26,7 +30,7 @@ styles and standards. BE4M36SWA (Course web pages)
      - Uplatňuje se pro ověření a validaci návrhu architektury
      - Pomáhá provést průřez všemi čtyřmi pohledy
 
-**Jak 4+1 View Model zachycuje chování softwaru z různých perspektiv:**
+## Jak 4+1 View Model zachycuje chování softwaru z různých perspektiv:
 
    - A. Logický pohled (Logical View):
       - Poskytuje abstraktní pohled na systém z hlediska funkčnosti
@@ -58,9 +62,9 @@ styles and standards. BE4M36SWA (Course web pages)
       - Pomáhají identifikovat problémy a nedostatky v návrhu
       - Slouží k provádění průřezů mezi všemi čtyřmi pohledy a k integraci různých aspektů systému
 
-**Souvislost mezi 4+1 View Model a UML modely:**
+## Souvislost mezi 4+1 View Model a UML modely:
 
-**UML diagramy pro 4+1 View Model:**
+### UML diagramy pro 4+1 View Model:
 
 1. Logický pohled (Logical View):
     - Třídní diagram (Class Diagram)
@@ -83,23 +87,20 @@ styles and standards. BE4M36SWA (Course web pages)
     - Balíčkový diagram (Package Diagram)
     - Diagram komponent (Component Diagram)
 
-**Integrace UML s 4+1 View Model:**
+### Integrace UML s 4+1 View Model:
 
     - UML diagramy poskytují vizuální reprezentaci pro každý pohled v 4+1 View Modelu
     - Umožňují efektivní komunikaci mezi architekty, vývojáři, testery a dalšími členy týmu
     - Podporují analýzu, návrh, implementaci a údržbu systému
     - Usnadňují kontrolu a řízení kvality architektury
 
-### What is a software architecture? Describe the importance of software architecture when developing a system. What are the software architecture design guidelines? What are the architectural styles? Give an example of an architectural style and describe it in detail.
-
-
-**Co je softwarová architektura?**
+## Co je softwarová architektura?
 
 - Softwarová architektura je **struktura** a **organizace** softwarového systému.
 - Zahrnuje **komponenty**, jejich **vlastnosti** a **vztahy** mezi nimi.
 - Definuje **zásady**, **směrnice** a **omezení** pro vývoj systému.
 
-**Důležitost softwarové architektury při vývoji systému:**
+## Důležitost softwarové architektury při vývoji systému:
 
 1. **Zajištění kvality**:
    - Architektura zajišťuje, že systém splňuje **funkční** a **nefunkční** požadavky.
@@ -114,7 +115,7 @@ styles and standards. BE4M36SWA (Course web pages)
 6. **Zlepšení výkonnosti**:
    - Architektura optimalizuje **výkonnost**, **škálovatelnost** a **stabilitu** systému.
 
-**Směrnice pro návrh softwarové architektury:**
+## Směrnice pro návrh softwarové architektury:
 
 1. **Rozdělit a vládnout**:
    - Systém rozdělit na menší, snadno řiditelné komponenty.
@@ -131,11 +132,11 @@ styles and standards. BE4M36SWA (Course web pages)
 7. **Flexibilita**:
    - Umožnit snadnou údržbu a přizpůsobení změnám požadavků.
 
-**Architektonické styly:**
+## Architektonické styly:
 
 - Architektonické styly jsou **vzory** nebo **paradigmata** pro návrh softwarové architektury.
 
-**Příklad architektonického stylu: MVC (Model-View-Controller)**
+## Příklad architektonického stylu: MVC (Model-View-Controller)
 
 1. **Model**:
    - Reprezentuje **data** a **byznysovou logiku** aplikace.
@@ -147,26 +148,23 @@ styles and standards. BE4M36SWA (Course web pages)
    - Zodpovědný za **řízení** interakce mezi modelem a zobrazením.
    - Zpracovává uživatelské vstupy a aktualizuje model nebo zobrazení.
 
-**Detaily architektonického stylu MVC:**
+## Detaily architektonického stylu MVC:
 
 - **Oddělení zájmů**: MVC odděluje zájmy aplikace do tří komponent, což usnadňuje údržbu a rozšíření.
 - **Znovupoužitelnost**: Model a Controller mohou být znovu použity pro různá zobrazení.
 - **Flexibilita**: Změny v jedné komponentě mají minimální dopad na ostatní komponenty.
 
-#### What is a design pattern? What problem are design patterns solving? What types of design patterns exist? Why is it important to know the design patterns? Are there design antipatterns?
-
-
-**Co je návrhový vzor (design pattern)?**
+## Co je návrhový vzor (design pattern)?
 
 - Návrhový vzor je **opakovatelné řešení** pro často se vyskytující problémy v oblasti softwarového návrhu.
 - Není to hotový návrh, ale **šablona** pro řešení problému, kterou lze přizpůsobit konkrétním situacím.
 
-**Jaký problém řeší návrhové vzory?**
+## Jaký problém řeší návrhové vzory?
 
 - Návrhové vzory řeší problémy, které se vyskytují opakovaně při návrhu softwarových systémů.
 - Pomáhají **zlepšit kvalitu** kódu, **usnadnit komunikaci** mezi vývojáři a **urychlit vývoj**.
 
-**Typy návrhových vzorů:**
+## Typy návrhových vzorů:
 
 1. **Vzory pro tvorbu objektů (Creational Patterns)**:
    - Řeší problémy spojené s procesem vytváření objektů.
@@ -178,7 +176,7 @@ styles and standards. BE4M36SWA (Course web pages)
    - Řeší problémy interakce mezi objekty a způsoby, jakými spolupracují.
    - Příklady: Chain of Responsibility, Command, Interpreter, Iterator, Mediator, Memento, Observer, State, Strategy, Template Method, Visitor.
 
-**Důležitost znalosti návrhových vzorů:**
+## Důležitost znalosti návrhových vzorů:
 
 1. **Zlepšení kvality kódu**:
    - Návrhové vzory poskytují osvědčené řešení, která zvyšují kvalitu kódu.
@@ -191,24 +189,21 @@ styles and standards. BE4M36SWA (Course web pages)
 5. **Podpora znovupoužitelnosti**:
    - Návrhové vzory podporují znovupoužitelnost kódu tím, že umožňují snadnější integraci a adaptaci kódu.
 
-**Existují návrhové antivzory (design antipatterns)?**
+## Existují návrhové antivzory (design antipatterns)?
 
 - Ano, návrhové antivzory existují.
 - Jsou to **špatné řešení** nebo **protipříklady** dobrých návrhových vzorů.
 - Návrhové antivzory mohou vést ke **špatně navrženému**, **těžko udržitelnému** a **neefektivnímu** kódu.
 - Je důležité rozpoznat a vyhýbat se návrhovým antivzorům, aby byla zajištěna dobrá kvalita kódu a efektivní vývoj.
 
-#### What is a microservice architecture? What are its advantages and disadvantages compared to a monolithic architecture. How is microservices development different from developing a monolithic application? Are there any methodologies or guidelines or best practices to follow when developing microservices? Obviously, there are patterns that can be applied in this area, are there any antipatterns that should be avoided?
-
-
-**Co je mikroservisní architektura?**
+## Co je mikroservisní architektura?
 
 - Mikroservisní architektura je **přístup k vývoji softwaru**, který rozděluje aplikaci na **malé, nezávislé služby**.
 - Tyto služby komunikují pomocí **lehkých protokolů** (např. REST nebo gRPC) a mají vlastní **databáze** a **konfigurace**.
 
-**Výhody a nevýhody mikroservisní architektury oproti monolitické architektuře:**
+## Výhody a nevýhody mikroservisní architektury oproti monolitické architektuře:
 
-**Výhody:**
+## Výhody:
 
 1. **Lehká škálovatelnost**:
    - Mikroservisy lze škálovat nezávisle na ostatních službách.
@@ -221,7 +216,7 @@ styles and standards. BE4M36SWA (Course web pages)
 5. **Odolnost vůči chybám**:
    - Selhání jedné služby má menší dopad na celý systém.
 
-**Nevýhody:**
+## Nevýhody:
 
 1. **Složitost**:
    - Větší počet komponent a interakcí mezi nimi zvyšuje složitost systému.
@@ -232,7 +227,7 @@ styles and standards. BE4M36SWA (Course web pages)
 4. **Distribuované transakce**:
    - Řešení distribuovaných transakcí může být komplikovanější než v monolitických aplikacích.
 
-**Jak se vývoj mikroservisů liší od vývoje monolitické aplikace?**
+## Jak se vývoj mikroservisů liší od vývoje monolitické aplikace?
 
 1. **Rozdělení aplikace**:
    - Aplikace je rozdělena na menší, nezávislé služby.
@@ -249,7 +244,7 @@ styles and standards. BE4M36SWA (Course web pages)
 7. **Distribuované transakce**:
    - Řešení distribuovaných transakcí může být komplikovanější než v monolitických aplikacích.
 
-**Metodiky, směrnice a osvědčené postupy pro vývoj mikroservisů:**
+## Metodiky, směrnice a osvědčené postupy pro vývoj mikroservisů:
 
 1. **Rozdělit a vládnout**:
    - Aplikaci rozdělit na menší, nezávislé a snadno řiditelné služby.
@@ -272,7 +267,7 @@ styles and standards. BE4M36SWA (Course web pages)
 10. **Kontejnerizace a orchestrace**:
     - Používat kontejnery (např. Docker) a orchestrátory (např. Kubernetes) pro snadnou správu a škálování.
 
-**Antivzory, kterým by se mělo vyhnout při vývoji mikroservisů:**
+## Antivzory, kterým by se mělo vyhnout při vývoji mikroservisů:
 
 1. **Nedostatečné rozdělení služeb**:
    - Příliš velké nebo příliš malé služby mohou vést k problémům se škálovatelností a údržbou.
@@ -295,8 +290,7 @@ styles and standards. BE4M36SWA (Course web pages)
 10. **Nedostatečná dokumentace a komunikace**:
     - Špatně zdokumentované nebo nekomunikované změny mohou vést k nedorozuměním a chybám mezi týmy.
 
-#### Software architects can choose one architecture over another. The choice may affect the quality of the final product. Can you tell if one architecture is better than another or if one architecture is bad while the other is not? How can you measure the quality of an architecture? Can you measure the quality from different perspectives?
-
+## Výběr softwarové architektury
 
 Při výběru softwarové architektury je těžké říci, že jedna architektura je obecně lepší než druhá, protože jejich vhodnost závisí na konkrétních požadavcích a omezeních projektu. Při výběru architektury je důležité zvážit následující faktory:
 
@@ -326,7 +320,7 @@ Při výběru softwarové architektury je těžké říci, že jedna architektur
 
 Při výběru architektury je důležité zvážit všechny tyto faktory a zvolit takovou, která nejlépe vyhovuje konkrétním potřebám a omezením projektu. Není žádná univerzálně "špatná" nebo "lepší" architektura; místo toho je třeba posoudit, jaká architektura je nejvhodnější pro daný projekt.
 
-**Měření kvality architektury:**
+## Měření kvality architektury:
 
 Kvalitu softwarové architektury lze měřit pomocí několika metrik a z různých perspektiv. Některé z těchto perspektiv zahrnují:
 
