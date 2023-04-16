@@ -119,6 +119,24 @@ Další možností je využití ukládání skrytého kanálu k ukládání info
 Prevence skrytých kanálů zahrnuje monitorování časových prodlev a ukládání dat na počítači. Bezpečnostní opatření by měla být navržena tak, aby minimalizovala možnosti využití skrytých kanálů útočníky. Například by měla být omezena možnost ukládání dat na pevný disk a monitorovány časové prodlevy.
 
 ### Side channel attacks
+
+Side channel attacks are a type of cyber attack that exploits weaknesses in a system's physical or electromagnetic characteristics, such as power consumption, electromagnetic radiation, or sound, to extract sensitive information. These attacks are often used to bypass encryption or other security measures and can be difficult to detect.
+
+#### **Types of Side Channel Attacks**
+
+1. **Power Analysis Attack**: This attack involves analyzing the power consumption of a device to determine the secret key used in encryption. 
+
+2. **Electromagnetic Attack**: This attack involves analyzing the electromagnetic radiation emitted by a device to determine the secret key used in encryption.
+
+3. **Acoustic Attack**: This attack involves analyzing the sound produced by a device to determine the secret key used in encryption.
+
+#### **Prevention of Side Channel Attacks**
+
+1. **Implementing Countermeasures**: Implementing countermeasures such as noise reduction techniques, shielding, and filtering can help prevent side channel attacks.
+
+2. **Using Advanced Encryption**: Using advanced encryption algorithms that are resistant to side channel attacks can also help prevent these attacks.
+
+3. **Regular Security Audits**: Regular security audits can help identify and address any vulnerabilities that may be exploited by side channel attacks.
    
 ### Steganography
 
