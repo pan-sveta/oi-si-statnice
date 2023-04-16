@@ -226,9 +226,339 @@ MapReduce (architecture, functions, data flow, execution, use cases). Hadoop (Ma
   4. Integraci s Hadoop MapReduce pro efektivní zpracování dat
 
 
-XPath (path expressions, axes, node tests, predicates). XQuery (constructors, FLWOR, conditional, quantified and comparison expressions). SPARQL (subgraph matching, graph patterns, datasets, filters, solution modifiers, query forms).
+### XPath (path expressions, axes, node tests, predicates). XQuery (constructors, FLWOR, conditional, quantified and comparison expressions). SPARQL (subgraph matching, graph patterns, datasets, filters, solution modifiers, query forms).
 
-RiakKV (CRUD operations, links, link walking, convergent replicated data types, Search 2.0, vector clocks, Riak Ring, replica placement strategy). Redis (data types, operations, TTL). Cassandra (keyspaces, column families, CRUD operations). MongoDB (CRUD operations,
-update and query operators, projection, modifiers).
 
-Graph data structures (adjacency matrix, adjacency list, incidence matrix). Data locality (BFS layout, bandwidth minimization problem, Cuthill-McKee algorithm). Graph partitioning (1D partitioning, 2D partitioning). Neo4j (traversal framework, traversal description, traverser). Cypher (graph matching, read, write and general clauses).
+**XPath**
+
+- XPath
+  - Cesta vyjadřuje umístění uzlů v XML dokumentu
+  - Používá se pro vyhledávání dat v XML dokumentech
+- Výrazy cesty
+  - Absolutní: Začínají od kořenového uzlu (např. `/kniha/nazev`)
+  - Relativní: Začínají od aktuálního uzlu (např. `./nazev`)
+- Osi
+  - child: Bezprostřední potomci aktuálního uzlu
+  - descendant: Všichni potomci aktuálního uzlu
+  - parent: Rodič aktuálního uzlu
+  - ancestor: Všichni předkové aktuálního uzlu
+  - sibling: Sourozenci aktuálního uzlu
+- Testy uzlů
+  - node(): Vybere všechny uzly
+  - text(): Vybere všechny textové uzly
+  - comment(): Vybere všechny komentářové uzly
+  - processing-instruction(): Vybere všechny uzly zpracovávající pokyny
+- Predikáty
+  - Umožňují filtrovat výsledky XPath výrazů
+  - Uzavírají se do hranatých závorek (např. `/kniha[nazev='Mistr a Markétka']`)
+  - Často se používají s operátory a funkcemi (např. `not()`, `and`, `or`)
+
+**XQuery**
+
+- XQuery
+  - Jazyk pro dotazování a manipulaci s XML a JSON dokumenty
+  - Má vyšší výrazovou sílu než XPath
+- Konstruktory
+  - Element: `<jmeno>{obsah}</jmeno>`
+  - Atribut: `attribute jmeno {"hodnota"}`
+  - Text: `text {"obsah"}`
+  - Komentář: `comment {"komentář"}`
+  - Zpracovávací pokyn: `processing-instruction jmeno {"hodnota"}`
+- FLWOR
+  - Pro vyhledávání a transformaci dat
+  - F: For - prochází kolekcemi
+  - L: Let - přiřazuje hodnotu proměnné
+  - W: Where - podmínka pro filtrování
+  - O: Order by - řazení výsledků
+  - R: Return - vrácení výsledku
+- Podmínkové výrazy
+  - if (podmínka) then (výraz1) else (výraz2)
+- Kvantifikované výrazy
+  - every $x in (sekvence) satisfies (podmínka)
+  - some $x in (sekvence) satisfies (podmínka)
+- Porovnávací výrazy
+  - '=', '!=', '<', '>', '<=', '>='
+  - 'eq', 'ne', 'lt', 'gt', 'le', 'ge'
+
+**SPARQL**
+
+- SPARQL
+  - Jazyk pro dotazování a manipulaci s RDF grafovými daty
+  - Používá se pro práci s daty ve formátu RDF
+- Subgrafické porovnávání
+  - Hledání vzorů v RDF grafech
+  - Provádí se pomocí trojic subjekt-predikát-objekt
+- Grafové vzory
+  - Základní: Jednoduché trojice (např. `?x rdf:type foaf:Person`)
+  - Volitelné: Používají klíčové slovo OPTIONAL (např. `OPTIONAL {?x foaf:mbox ?email}`)
+  - Alternativní: Používají klíčové slovo UNION (např. `{?x foaf:name ?name} UNION {?x rdfs:label ?name}`)
+- Datasety
+  - Default: Graf, který je vyhledáván implicitně
+  - Named: Grafy, které jsou vyhledávány explicitně pomocí klíčového slova FROM NAMED
+- Filtry
+  - Omezují výsledky dotazu podle zadaných podmínek
+  - Používají klíčové slovo FILTER (např. `FILTER (?age >= 18)`)
+- Modifikátory řešení
+  - Order by: Řazení výsledků (např. `ORDER BY ?name`)
+  - Limit: Omezení počtu výsledků (např. `LIMIT 10`)
+  - Offset: Posunutí výsledků (např. `OFFSET 5`)
+  - Distinct: Odstranění duplikátů (např. `SELECT DISTINCT ?name`)
+- Formy dotazů
+  - SELECT: Výběr proměnných
+  - CONSTRUCT: Vytváření nových RDF trojic
+  - ASK: Dotaz na existenci vzoru
+  - DESCRIBE: Popis zdrojů RDF
+
+### RiakKV (CRUD operations, links, link walking, convergent replicated data types, Search 2.0, vector clocks, Riak Ring, replica placement strategy). Redis (data types, operations, TTL). Cassandra (keyspaces, column families, CRUD operations). MongoDB (CRUD operations, update and query operators, projection, modifiers).
+
+**RiakKV**
+
+- RiakKV
+  - Distribuovaný klíč-hodnota úložiště
+  - Navržený pro vysokou dostupnost a škálovatelnost
+- CRUD operace
+  - Create: Vytvoření hodnoty s klíčem
+  - Read: Čtení hodnoty podle klíče
+  - Update: Aktualizace hodnoty s klíčem
+  - Delete: Smazání hodnoty s klíčem
+- Odkazy (links)
+  - Reprezentují vztahy mezi objekty v RiakKV
+  - Umožňují navigaci mezi objekty
+- Procházení odkazů (link walking)
+  - Prohledávání objektů v RiakKV pomocí odkazů
+  - Zahrnuje kroky ve formátu "kbelík,tag,řetězec"
+- Konvergentní replikované datové typy (CRDT)
+  - Umožňují konzistentní replikaci dat v distribuovaném systému
+  - Zahrnuje: množiny, mapy, flagy, registry a čítače
+- Search 2.0
+  - Full-textové vyhledávání v RiakKV
+  - Založeno na Apache Solr
+- Vektorové hodiny (vector clocks)
+  - Algoritmus pro řešení konfliktů v distribuovaném systému
+  - Sleduje verze objektů a řeší konflikty
+- Riak Ring
+  - Struktura pro rozdělení dat v RiakKV
+  - Zajišťuje škálovatelnost a toleranci selhání
+- Strategie umístění replik (replica placement strategy)
+  - Určuje, jak a kde jsou repliky uloženy v RiakKV
+  - Zahrnuje: uniformní, zónování a vlastní strategie
+
+![RiakKV Ring](riak-ring.png)
+
+**Redis**
+
+- Redis
+  - Výkonný klíč-hodnota úložiště v paměti
+  - Podporuje rozmanité datové typy
+- Datové typy
+  - Řetězce (strings)
+  - Seznamy (lists)
+  - Množiny (sets)
+  - Uspořádané množiny (sorted sets)
+  - Mapy (hashes)
+  - Bitmapy (bitmaps)
+  - HyperLogLogs
+- Operace
+  - GET, SET: Čtení a zápis řetězců
+  - LPUSH, RPUSH, LPOP, RPOP: Práce se seznamy
+  - SADD, SREM, SISMEMBER: Práce s množinami
+  - ZADD, ZRANK, ZRANGE: Práce s uspořádanými množinami
+  - HSET, HGET, HDEL: Práce s mapami
+- TTL (Time-To-Live)
+  - Expirace klíčů po určité době
+  - SETEX, PSETEX: Nastavení TTL při zápisu
+  - EXPIRE, PEXPIRE: Nastavení TTL pro existující klíč
+  - TTL, PTTL: Získání zbývajícího času do expirace
+
+**Cassandra**
+
+- Cassandra
+  - Distribuovaná databáze s vysokou škálovatelností a dostupností
+  - Navržená pro práci s velkým množstvím dat
+- Keyspaces
+  - Kontejnery pro ukládání sloupcových rodin (column families)
+  - Definují replikační faktor a strategii
+- Column families
+  - Ukládají data v Cassandra
+  - Skládají se ze sloupců a řádků
+- CRUD operace
+  - CREATE: Vytvoření keyspace, tabulky nebo indexu
+  - INSERT: Vložení nebo aktualizace záznamu
+  - SELECT: Čtení záznamů
+  - UPDATE: Aktualizace záznamu
+  - DELETE: Smazání záznamu nebo části záznamu
+
+**MongoDB**
+
+- MongoDB
+  - Dokumentová databáze s vysokou škálovatelností a flexibilitou
+  - Ukládá data ve formátu BSON (binární JSON)
+- CRUD operace
+  - Create: Vytvoření dokumentu (db.kolekce.insert())
+  - Read: Čtení dokumentů (db.kolekce.find())
+  - Update: Aktualizace dokumentů (db.kolekce.update())
+  - Delete: Smazání dokumentů (db.kolekce.remove())
+- Operátory aktualizace
+  - $set: Nastavení hodnoty pole nebo vytvoření nového pole
+  - $unset: Odstranění pole
+  - $inc: Inkrementace hodnoty pole
+  - $mul: Násobení hodnoty pole
+  - $rename: Přejmenování pole
+- Operátory dotazování
+  - $eq: Rovnost
+  - $gt, $gte: Větší než, větší než nebo rovno
+  - $lt, $lte: Menší než, menší než nebo rovno
+  - $ne: Nerovnost
+  - $in: Hodnota je v seznamu
+  - $nin: Hodnota není v seznamu
+  - $and, $or, $not: Logické operátory
+- Projekce
+  - Určuje, která pole vrátit v dotazu
+  - 1 pro zobrazení pole, 0 pro skrytí pole (např. `{pole: 1}`)
+- Modifikátory
+  - $limit: Omezení počtu vrácených dokumentů
+  - $skip: Přeskočení určitého počtu dokumentů
+  - $sort: Řazení dokumentů podle zadaných kritérií
+
+
+### Graph data structures (adjacency matrix, adjacency list, incidence matrix). Data locality (BFS layout, bandwidth minimization problem, Cuthill-McKee algorithm). Graph partitioning (1D partitioning, 2D partitioning). Neo4j (traversal framework, traversal description, traverser). Cypher (graph matching, read, write and general clauses).
+
+**Grafové datové struktury**
+
+- Grafové datové struktury
+  - Používány pro reprezentaci grafů (sítí, diagramů) v paměti počítače
+  - Základní struktury: maticová a seznamová reprezentace
+- Matice sousednosti (adjacency matrix)
+  - Čtvercová matice, která popisuje vztahy mezi vrcholy grafu
+  - V[i][j] = 1, pokud vrcholy i a j sousedí, jinak 0
+  - Pro vážené grafy: V[i][j] = váha hrany, pokud vrcholy i a j sousedí, jinak 0
+  - Výhody:
+    - Rychlé zjištění, zda mezi vrcholy existuje hrana
+    - Jednoduchá implementace
+  - Nevýhody:
+    - Nevhodné pro řídké grafy (mnoho nulových hodnot)
+    - Vyšší paměťová náročnost
+- Seznam sousednosti (adjacency list)
+  - Pole seznamů, kde každý seznam obsahuje sousedy daného vrcholu
+  - V[i] = seznam sousedních vrcholů vrcholu i
+  - Pro vážené grafy: V[i] = seznam dvojic (soused, váha hrany)
+  - Výhody:
+    - Nižší paměťová náročnost pro řídké grafy
+    - Rychlé procházení sousedů daného vrcholu
+  - Nevýhody:
+    - Pomalejší zjištění, zda mezi vrcholy existuje hrana
+    - Složitější implementace
+- Matice incidence (incidence matrix)
+  - Matice, která popisuje vztahy mezi vrcholy a hranami grafu
+  - V[i][j] = 1, pokud vrchol i je spojen s hranou j, jinak 0
+  - Pro orientované grafy: V[i][j] = -1, pokud hrana j vychází z vrcholu i; V[i][j] = 1, pokud hrana j vstupuje do vrcholu i
+  - Výhody:
+    - Jednoznačně reprezentuje orientované i neorientované grafy
+    - Umožňuje rychle zjistit, které vrcholy jsou spojeny s danou hranou
+  - Nevýhody:
+    - Vyšší paměťová náročnost než seznam sousednosti
+    - Pomalejší procházení sousedů daného vrcholu
+
+**Data locality**
+
+- Data locality
+  - Optimalizace přístupu k datům v počítačové paměti
+  - Zlepšuje výkon a efektivitu paměti
+- BFS layout (Breadth-First Search)
+  - Uspořádání dat v paměti podle BFS procházení grafu
+  - Výhody:
+    - Zlepšuje data locality pro algoritmy založené na BFS
+    - Snížení latence při přístupu k sousedním vrcholům
+- Bandwidth minimization problem
+  - Problém minimalizace šířky pásma matice
+  - Cílem je přeuspořádat řádky a sloupce matice tak, aby neprázdné prvky byly co nejblíže hlavní diagonále
+  - Redukce šířky pásma zlepšuje data locality
+- Cuthill-McKee algoritmus
+  - Heuristický algoritmus pro řešení problému minimalizace šířky pásma
+  - Postup:
+    1. Vyberte vrchol s nejnižším stupněm jako kořen
+    2. Proveďte BFS procházení grafu od kořene
+    3. Přeuspořádejte vrcholy podle BFS pořadí
+  - Výhody:
+    - Snadno implementovatelný
+    - Zpravidla dává dobré výsledky
+  - Nevýhody:
+    - Ne vždy najde optimální řešení
+
+**Graph partitioning**
+
+- Grafové rozdělení (Graph partitioning)
+  - Proces rozdělení grafu na menší části (partice) s cílem optimalizovat výkon
+  - Používá se při paralelizaci, distribuovaném zpracování a zefektivnění úložiště
+
+- 1D rozdělení (1D partitioning)
+  - Graf je rozdělen na partice podél jednoho rozměru (řádky nebo sloupce)
+  - Používá se např. při rozdělení matice na bloky pro paralelní zpracování
+  - Výhody:
+    - Jednoduchá implementace
+    - Snadné rozdělení zátěže mezi procesory nebo uzly
+  - Nevýhody:
+    - Může vést k nerovnoměrnému rozložení zátěže, pokud graf není rovnoměrně rozdělitelný
+    - Méně efektivní pro grafy s nerovnoměrným rozložením hran
+
+- 2D rozdělení (2D partitioning)
+  - Graf je rozdělen na partice podél dvou rozměrů (řádky a sloupce)
+  - Výhody:
+    - Lepší vyvážení zátěže než u 1D rozdělení
+    - Efektivnější pro grafy s nerovnoměrným rozložením hran
+  - Nevýhody:
+    - Složitější implementace
+    - Vyšší režie při komunikaci mezi procesory nebo uzly
+
+**Neo4j**
+
+- Neo4j
+  - Grafická databáze s vysokou škálovatelností a flexibilitou
+  - Umožňuje efektivní prohledávání a manipulaci s grafy
+- Traversal framework
+  - Rámec pro průchod grafem v Neo4j
+  - Umožňuje efektivně a flexibilně procházet grafem za účelem hledání vzorů, cest a dalších struktur
+- Traversal description (Popis průchodu)
+  - Definuje, jak má být graf procházen
+  - Specifikuje:
+    - Výchozí vrcholy (start nodes)
+    - Procházení směrem (vstupní/výstupní hrany)
+    - Typy hran a vrcholů, které mají být zahrnuty
+    - Hloubka průchodu (maximální počet kroků)
+    - Evaluatory a pravidla pro zahrnutí vrcholů a hran do výsledku
+- Traverser
+  - Objekt, který provádí průchod grafem podle zadaného traversal description
+  - Vrací výsledné vrcholy a hrany, které splňují zadaná pravidla
+  - Umožňuje iterativní přístup k výsledkům průchodu
+
+**Cypher**
+
+- Cypher
+  - Deklarativní jazyk pro práci s grafy v Neo4j
+  - Umožňuje jednoduché a efektivní dotazování a manipulaci s grafy
+- Graph matching
+  - Prohledávání grafu za účelem nalezení vzorů a struktur
+  - Používá ASCII-art notaci pro definici vzorů
+  - Např. `(a)-[:ZNÁ]->(b)` najde všechny vrcholy `a` a `b`, které jsou spojeny hranou typu "ZNÁ"
+- Read clauses (Přečíst klauzule)
+  - Klauzule pro čtení dat z grafu
+  - MATCH: Hledání vzorů v grafu
+  - WHERE: Filtrování výsledků podle zadaných podmínek
+  - RETURN: Vracení výsledků dotazu
+  - WITH: Průběžné zpracování výsledků (řazení, filtrování, aliasy)
+  - UNWIND: Rozbalení seznamů na jednotlivé prvky
+  - SKIP, LIMIT: Omezení počtu vrácených výsledků
+  - ORDER BY: Řazení výsledků podle zadaných kritérií
+- Write clauses (Zapsat klauzule)
+  - Klauzule pro zápis a manipulaci dat v grafu
+  - CREATE: Vytvoření nových vrcholů a hran
+  - MERGE: Vytvoření vrcholu nebo hrany, pokud neexistuje, jinak aktualizace
+  - SET: Nastavení vlastností vrcholů a hran
+  - DELETE: Smazání vrcholů a hran
+  - REMOVE: Odstranění vlastností nebo štítků z vrcholů
+- General clauses (Obecné klauzule)
+  - Klauzule pro řízení dotazů a nastavení
+  - USING INDEX: Vynucení použití indexu pro dotaz
+  - CALL: Volání uložených procedur a funkcí
+  - LOAD CSV: Načítání dat ze CSV souboru
+  - FOREACH: Provedení akce pro každý prvek seznamu

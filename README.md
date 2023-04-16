@@ -1,6 +1,10 @@
-# GPT Prompt
-Describe in context of *xxx*; make the format easier for learning to memorize;use markdown directive so I can copy it: *yyy*
+# Výpisky pro státní závěrečné zkoušky
+## OI Softwatové inženýrství
 
-Popiš v kontextu kybernetické bezpečnosti; používej formát, který se bude dobře učit a pamatovat; použij markdown tak abych to mohl zkopírovat; Používej český jazyk k popisu, ale názvy pojmů překládat nemusíš, pokud nemají ustálený výraz v čj: 
+Tyto výpisky jsou z valné většiny generovány za pomocí GPT-4 modelu a slouží jako přehled nejdůležitějších znalostí ke každému bodu.
 
-Describe in context of cyber security in czech language. You can use english term if czech does not exits. Make the format easier for learning and memorizable. Use markdown directive and put it into a codeblock: 
+Jako zdroj okruhů posloužil dokument [Specifikace státnicových okruhů radou programu](https://oi.fel.cvut.cz/res/pages/files/17311-50-oi-master-state-exam-topics-2021-05-28.pdf).
+
+Budu rád zakaždý pull request s opravami a doplněním.
+
+Výpisky se autoamticky publikují na Github Pages a PDF je dostupné v sekci **Releases**.
