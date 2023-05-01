@@ -24,18 +24,18 @@ Effective algorithms and optimization methods. Data structures, synchronization 
   - Skládá se z následujících oblastí:
     1. Metodický (Method) area
     2. Heap (Haldy)
-       - Rozdělen na:
-         - **New Generation**:
-           - Mladší generace, kde se ukládají nově vytvořené objekty
-           - Dále rozdělen na:
-             - Eden Space: místo pro vytváření nových objektů
-             - Survivor Spaces (S0 a S1): oblasti pro přeživší objekty z Eden Space
-         - **Old Generation**:
-           - Starší generace, kam se přesouvají objekty, které přežily několik cyklů Garbage Collection
-           - Slouží pro dlouhodobě žijící objekty
     3. Java stacks
     4. PC (Program Counter) registry
     5. Nativní (Native) metoda stacks
+- **Heap (Haldy)**
+    - **New Generation**:
+      - Mladší generace, kde se ukládají nově vytvořené objekty
+      - Dále rozdělen na:
+        - Eden Space: místo pro vytváření nových objektů
+        - Survivor Spaces (S0 a S1): oblasti pro přeživší objekty z Eden Space
+    - **Old Generation**:
+        - Starší generace, kam se přesouvají objekty, které přežily několik cyklů Garbage Collection
+        - Slouží pro dlouhodobě žijící objekty
 - **Frame**:
   - Jednotka paměťového zásobníku (stack) pro každé volání metody
   - Obsahuje:
