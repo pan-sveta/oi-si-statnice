@@ -46,7 +46,7 @@ jobs:
           overwrite: true
           
       - name: Compile Markdown to HTML
-        run: pandoc -c pandoc.css --toc -o index.html -f markdown+rebase_relative_paths --metadata -s document.md BSY/BSY.md DS2/DS2.md ESW/ESW.md KO/KO.md PAG/PAG.md PAL/PAL.md SWA/SWA.md TAL/TAL.md ZKS/ZKS.md
+        run: pandoc --standalone --css=pandoc.css --toc --metadata -o index.html -f markdown+rebase_relative_paths document.md BSY/BSY.md DS2/DS2.md ESW/ESW.md KO/KO.md PAG/PAG.md PAL/PAL.md SWA/SWA.md TAL/TAL.md ZKS/ZKS.md
           
       - name: Setup Pages
         uses: actions/configure-pages@v3
