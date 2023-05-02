@@ -496,27 +496,512 @@ Použití paměťových bariér:
 - Správné použití paměťových bariér může pomoci předcházet problémům s nekonzistencí paměti a data race, ale může také způsobit pokles výkonu
 - Je důležité pečlivě zvážit potřebu paměťových bariér a použít je jen tam, kde je to nezbytné, aby se minimalizoval vliv na výkon
 
-## Volatile variable
-## Synchronization - thin fat and biased locking
-## Reentrant locks
-## Atomic operations based on compare-and-set instructions
-## Atomic field updaters
-## Non-blocking algorithms
-## Wait free algorithms
-## Non-blocking stack (LIFO)
-## Static and dynamic memory analysis
-## Shallow and retained size
-## Memory leak
-## Data Structures
-## Java primitives and objects
-## Auto-boxing and unboxing
-## Memory efficiency of complex data structures
-## Collection for performance
-## Type specific collections
-## Open addressing hashing
-## Collision resolution schemes
+## Volatile proměnná:
+- Klíčové slovo `volatile` v programovacích jazycích (jako C, C++ nebo Java) označuje proměnnou, která může být změněna vnějšími procesy nebo paralelními vlákny
+- Při použití `volatile` kompilátor a běhové prostředí zajišťují, že přístupy k této proměnné nebudou optimalizovány ani mezipaměťovány, což zajišťuje konzistentní a aktuální hodnoty pro všechna vlákna
+
+Vlastnosti volatile proměnných:
+
+1. Zajišťují, že čtení a zápis volatile proměnné je vždy aktuální a konzistentní mezi různými vlákny
+2. Zabraňují reorganizaci čtení a zápisů proměnné kompilátorem nebo procesorem (memory ordering)
+3. Zajišťují viditelnost změn v proměnné mezi vlákny bez nutnosti použití explicitních synchronizačních mechanismů, jako jsou zámky (locks) nebo bariéry (barriers)
+
+Použití volatile proměnných:
+
+- Volatile proměnné jsou užitečné v situacích, kdy je důležité zajistit, že všechna vlákna vidí nejaktuálnější hodnotu proměnné
+- Mohou být použity pro komunikaci mezi vlákny, sdílení stavu nebo synchronizaci
+- Je důležité poznamenat, že volatile proměnné neposkytují atomičnost nebo vzájemné vyloučení (mutual exclusion), a proto nemusí být dostatečné pro řešení všech problémů se souběžností, jako jsou data race
+
+## Synchronizace - tenké (thin), tlusté (fat) a zaujaté (biased) zámky:
+
+Tenký zámek (Thin lock):
+
+- Lehký zámek s nízkým režijním zatížením, používaný v situacích, kdy není vysoká kontestace mezi vlákny
+- Rychlý a efektivní způsob zajištění synchronizace pro jednoduché případy
+- V případě zvýšené kontestace mezi vlákny může být tenký zámek transformován na tlustý zámek
+
+Tlustý zámek (Fat lock):
+
+- Robustnější zámek s vyšším režijním zatížením, používaný v situacích, kdy je vysoká kontestace mezi vlákny
+- Poskytuje lepší výkon při zajištění synchronizace v případě, že se více vláken soupeří o přístup ke sdíleným zdrojům
+- Transformace z tenkého zámku na tlustý zámok probíhá za běhu, pokud je to nutné
+
+Zaujatý zámek (Biased locking):
+
+- Optimalizace zámku, která zvyšuje výkon synchronizace v situacích, kdy objekt používá jedno vlákno a ostatní vlákna se o něj nezajímají
+- Zámek je "zaujatý" ve prospěch jednoho vlákna, které může provádět synchronizované operace bez nutnosti získávání zámku
+- Pokud se objekt stane kontestovaným mezi více vlákny, zaujatý zámek může být zrušen a převeden na tenký nebo tlustý zámek
+
+## Reentrant zámky:
+- Typ synchronizačního mechanismu, který umožňuje vláknu získat zámek vícekrát, aniž by došlo k uváznutí (deadlock)
+- Reentrant zámek sleduje, které vlákno drží zámek a kolikrát ho získalo
+- Vlákno může opustit zámek pouze tehdy, pokud uvolní zámek stejný počet, kolikrát ho získalo
+
+Vlastnosti reentrant zámků:
+
+1. Povolují vnořené zamykání (nested locking), což umožňuje vláknu získat zámek vícekrát, aniž by došlo k uváznutí
+2. Zvyšují robustnost kódu tím, že se zabrání uváznutí při opakovaném získání zámku stejným vláknem
+3. Mohou poskytnout pokročilé funkce, jako je podpora přerušitelného zamykání, časově omezené zamykání nebo spravedlivé plánování
+
+```java
+  import java.util.concurrent.locks.ReentrantLock;
+
+  ReentrantLock lock = new ReentrantLock();
+
+  // Získání zámku
+  lock.lock();
+  try {
+      // kritická sekce
+  } finally {
+      // Uvolnění zámku
+      lock.unlock();
+  }
+```
+
+```cpp
+#include <mutex>
+
+std::recursive_mutex mtx;
+
+// Získání zámku
+mtx.lock();
+try {
+    // kritická sekce
+} catch (...) {
+    // Uvolnění zámku
+    mtx.unlock();
+    throw;
+}
+// Uvolnění zámku
+mtx.unlock();
+
+```
+
+## Atomické operace založené na instrukcích porovnat-a-nastavit (compare-and-set):
+- Atomické operace, které kombinují porovnání a nastavení hodnoty v jediném nesdíleném (atomic) kroku
+- Běžně používány pro implementaci bezpečných a efektivních synchronizačních mechanismů, jako jsou zámky, semafory nebo počítadla
+- Základem pro mnoho lock-free a wait-free algoritmů, které umožňují vysoký výkon a škálovatelnost v paralelním prostředí
+
+Princip compare-and-set (CAS) operace:
+
+1. Porovnej hodnotu sdílené proměnné s očekávanou hodnotou
+2. Pokud se hodnoty shodují, nastav novou hodnotu proměnné
+3. Operace vrátí informaci, zda byla hodnota úspěšně nastavena nebo ne
+
+Výhody compare-and-set operací:
+
+- Poskytují atomičnost a zajišťují konzistenci dat při přístupu více vláken
+- Mohou snižovat režijní zatížení v porovnání s tradičními zámky nebo synchronizačními mechanismy
+- Umožňují vytvářet lock-free a wait-free algoritmy, které jsou škálovatelné a odolné vůči uváznutí (deadlock) a vyhladovění (starvation)
+
+## Atomické aktualizátory polí (Atomic Field Updaters):
+
+- Specializované utility pro atomické aktualizace polí objektů bez nutnosti vytvářet nové objekty s atomickými proměnnými
+- Umožňují provádět operace na jednotlivých polích objektů, které jsou atomické a bezpečné při současném přístupu více vláken
+- Zvyšují výkon a snižují režijní zatížení v paralelním prostředí díky snížení počtu vytvořených objektů
+
+Výhody atomických aktualizátorů polí:
+
+- Poskytují atomičnost a zajišťují konzistenci dat při přístupu více vláken k jednotlivým polím objektů
+- Snížení režijního zatížení a zlepšení výkonu v paralelním prostředí díky menšímu počtu vytvořených objektů
+- Umožňují vytvářet lock-free a wait-free algoritmy pro práci s objekty
+
+Použití atomických aktualizátorů polí:
+
+- V jazyce Java lze použít třídy `AtomicIntegerFieldUpdater`, `AtomicLongFieldUpdater` a `AtomicReferenceFieldUpdater` z balíčku `java.util.concurrent.atomic`
+- Pro jejich použití je nutné definovat pole objektu jako `volatile`
+
+## Neblokující algoritmy (Non-blocking algorithms):
+
+- Typ algoritmů, které nezabraňují přístupu k sdíleným datům nebo zdrojům jiným vláknům, když je prováděna operace
+- Zajišťují, že žádné vlákno nebude čekat na neomezeně dlouhou dobu na dokončení operace prováděné jiným vláknem
+- Mohou být klasifikovány jako lock-free, wait-free nebo obstruction-free, v závislosti na garancích, které poskytují
+
+Typy neblokujících algoritmů:
+
+1. Lock-free algoritmy:
+   - Zajišťují, že alespoň jedno vlákno dokončí svou operaci v konečném čase
+   - Zabraňují uváznutí (deadlocks) a vyhladovění (starvation)
+2. Wait-free algoritmy:
+   - Poskytují garanci, že každé vlákno dokončí svou operaci v konečném čase
+   - Zabraňují uváznutí, vyhladovění a čekání na dokončení jiných vláken
+3. Obstruction-free algoritmy:
+   - Poskytují garanci, že operace bude dokončena v konečném čase pouze v případě, že žádné jiné vlákno nezasahuje do provádění operace
+   - Slabší záruky než lock-free a wait-free algoritmy, ale stále zabraňují uváznutí
+
+Výhody neblokujících algoritmů:
+
+- Vysoký výkon a škálovatelnost v paralelním prostředí
+- Zabraňují uváznutí a vyhladovění, které mohou nastat při použití tradičních zámků a synchronizačních mechanismů
+- Zvyšují robustnost a spolehlivost paralelního kódu díky snížení možnosti uváznutí a vyhladovění
+
+## Wait-free algoritmy:
+
+- Speciální třída neblokujících algoritmů, které poskytují nejlepší záruky konvergence pro současně běžící vlákna
+- Zajišťují, že každé vlákno dokončí svou operaci v konečném čase bez ohledu na chování ostatních vláken
+- Zabraňují problémům, jako je uváznutí (deadlock), vyhladovění (starvation) a zbytečné čekání na dokončení jiných vláken
+
+Vlastnosti wait-free algoritmů:
+1. Konečná konvergence: Každé vlákno dokončí svou operaci v konečném čase, bez ohledu na ostatní vlákna
+2. Robustnost: Odpovědnost za dokončení operace leží na provádějícím vlákně, což zabraňuje závislosti na chování jiných vláken
+3. Spravedlivost: Žádné vlákno nemůže být trvale blokováno jiným vláknem, což zabraňuje vyhladovění
+
+Výhody wait-free algoritmů:
+- Vysoká škálovatelnost a výkon v paralelním prostředí
+- Zlepšení spolehlivosti a robustnosti paralelního kódu díky odstranění závislosti na chování jiných vláken
+- Poskytují nejlepší záruky konvergence ze všech typů neblokujících algoritmů
+
+Příklady wait-free algoritmů:
+- Wait-free fronty, zásobníky nebo počítadla, které zajišťují spravedlivý přístup ke sdíleným datovým strukturám
+- Wait-free implementace atomických proměnných nebo operací, jako jsou compare-and-set nebo fetch-and-add
+
+Použití wait-free algoritmů může být složitější než použití lock-free nebo obstruction-free algoritmů, ale poskytuje nejlepší záruky pro paralelní výpočty.
+
+## Neblokující zásobník (LIFO) - Non-blocking Stack:
+
+- Zásobník implementovaný jako neblokující datová struktura, která umožňuje současný přístup více vláken bez nutnosti použití zámků nebo synchronizačních mechanismů
+- Používá atomické operace, jako jsou compare-and-set (CAS), pro zajištění konzistence a bezpečnosti dat při současném přístupu více vláken
+- Zabraňuje problémům, jako je uváznutí (deadlock) a vyhladovění (starvation), které mohou nastat při použití tradičních zámků a synchronizačních mechanismů
+
+Základní operace nebokujícího zásobníku (LIFO):
+
+1. Push: Přidání prvku na vrchol zásobníku
+2. Pop: Odebrání prvku z vrcholu zásobníku
+
+Implementace nebokujícího zásobníku (LIFO):
+
+- Základem implementace je spojový seznam s hlavou (head), která ukazuje na vrchol zásobníku
+- Pro operaci Push a Pop se používá compare-and-set (CAS) operace, která zajišťuje atomičnost a konzistenci dat při přístupu více vláken
+- V případě, že CAS operace selže, vlákno opakuje operaci, dokud není úspěšná
+
+Výhody nebokujícího zásobníku (LIFO):
+
+- Vysoký výkon a škálovatelnost v paralelním prostředí díky snížení režijního zatížení spojeného se zámky a synchronizací
+- Zabraňuje uváznutí (deadlock) a vyhladovění (starvation), které mohou nastat při použití tradičních zámků a synchronizačních mechanismů
+- Zvyšuje robustnost a spolehlivost paralelního kódu díky odstranění možnosti uváznutí a vyhladovění
+
+## Statická a dynamická analýza paměti:
+
+Statická analýza paměti:
+
+- Provádí kontrolu zdrojového kódu bez jeho spuštění
+- Identifikuje potenciální problémy s pamětí, jako jsou úniky paměti (memory leaks), neinicializované proměnné nebo nesprávné uvolňování paměti
+- Zahrnuje kontrolu správnosti kódu, hledání nebezpečných funkcí nebo analýzu toku dat
+- Pomáhá odhalit chyby a zlepšit kvalitu kódu před jeho spuštěním
+
+Dynamická analýza paměti:
+
+- Provádí kontrolu během provádění programu, monitoruje jeho chování a alokaci paměti
+- Identifikuje problémy s pamětí v reálném čase, jako jsou úniky paměti, přístupy mimo rozsah pole nebo nesprávné uvolňování paměti
+- Vyžaduje spuštění programu a sledování jeho chování, což může způsobit zpomalení běhu
+- Umožňuje zjistit chyby, které nebyly odhaleny statickou analýzou, a poskytuje detailnější informace o problémech s pamětí
+
+Výhody statické a dynamické analýzy paměti:
+
+- Odhalení chyb, úniků paměti a problémů s pamětí, které mohou vést k nestabilitě nebo zranitelnostem v aplikaci
+- Zlepšení kvality kódu a výkonu programu díky efektivnímu řešení problémů s pamětí
+- Umožňuje vývojářům zaměřit se na kritické problémy a snížit riziko chyb ve výsledné aplikaci
+
+## Mělká velikost (Shallow size) a zadržená velikost (Retained size):
+
+Mělká velikost (Shallow size):
+- Velikost paměti, kterou přímo zabírá objekt, bez zahrnutí paměti zabírané objekty, na které odkazuje
+- Zahrnuje pouze velikost objektu a jeho přímých atributů, nikoli objektů, které jsou dostupné prostřednictvím referencí
+- Mělká velikost objektu je konstantní pro objekty stejného typu, protože závisí pouze na počtu atributů a jejich typu
+
+Zadržená velikost (Retained size):
+- Celková velikost paměti, kterou zabírá objekt a všechny objekty, které jsou dostupné pouze prostřednictvím tohoto objektu
+- Zahrnuje velikost objektu a všechny jeho tranzitivně dostupné objekty prostřednictvím referencí
+- Pokud by byl tento objekt uvolněn, zadržená velikost ukazuje, kolik paměti by bylo uvolněno
+
+Význam mělké a zadržené velikosti při analýze paměti:
+- Pomáhají identifikovat úniky paměti (memory leaks) a nadměrné využití paměti v aplikacích
+- Umožňují vývojářům zjistit, které objekty nebo části kódu nejvíce přispívají k celkovému využití paměti
+- Poskytují informace, které mohou vést k optimalizaci kódu a efektivnějšímu využití paměti
+
+## Únik paměti (Memory leak):
+
+- Problém, když program nepřestává alokovat paměť, aniž by ji následně správně uvolnil, což vede ke zvýšenému využití paměti
+- Může vést k degradaci výkonu, nestabilitě nebo selhání aplikace
+- Často způsoben chybami v kódu, kdy programátor zapomene uvolnit alokovanou paměť nebo se objeví cyklické reference, které brání automatickému uvolňování paměti (např. v jazyce Java s garbage collectorem)
+
+Příčiny úniků paměti:
+1. Nesprávné uvolňování paměti: Programátor alokuje paměť, ale zapomene ji uvolnit
+2. Cyklické reference: Dva nebo více objektů si navzájem udržují reference, což brání jejich automatickému uvolnění
+3. Statické proměnné: Proměnné, které zůstávají v paměti po celou dobu běhu programu, a které mohou neúmyslně udržovat reference na objekty
+
+Detekce a řešení úniků paměti:
+
+- Použití nástrojů pro statickou a dynamickou analýzu paměti k identifikaci potenciálních úniků paměti a zlepšení kvality kódu
+- Revize kódu, aby se zajistilo správné uvolňování paměti a předešlo se cyklickým referencím
+- V případě jazyků s garbage collectorem je důležité porozumět jeho chování a mechanismům uvolňování paměti, aby se předešlo neúmyslným únikům paměti
+
+## Datové struktury
+
+- Způsob organizace, správy a ukládání dat, který umožňuje efektivní přístup a modifikaci dat
+- Každá datová struktura má své vlastnosti a využití, které ji činí vhodnou pro konkrétní typ úlohy
+- Základní datové struktury zahrnují pole, spojové seznamy, zásobníky, fronty, stromy a grafy
+
+1. Pole (Array):
+   - Statická datová struktura s pevnou velikostí
+   - Umožňuje rychlý přístup k prvku na základě indexu
+   - Nevýhoda: neměnná velikost, která může vést k neefektivnímu využití paměti
+
+2. Spojový seznam (Linked list):
+   - Dynamická datová struktura, která se skládá z uzlů obsahujících data a odkaz na další uzel v seznamu
+   - Umožňuje snadné vkládání a mazání prvků bez nutnosti přesunu ostatních prvků
+   - Nevýhoda: pomalejší přístup k prvkům, protože je nutné projít seznam od začátku
+
+3. Zásobník (Stack):
+   - Lineární datová struktura, která pracuje na principu LIFO (Last In, First Out)
+   - Umožňuje přidávání a odebírání prvků pouze z vrcholu zásobníku
+   - Vhodné pro úlohy, které vyžadují rekurzi nebo zpětné sledování (backtracking)
+
+4. Fronta (Queue):
+   - Lineární datová struktura, která pracuje na principu FIFO (First In, First Out)
+   - Umožňuje přidávání prvků na konec fronty a odebírání z jejího začátku
+   - Vhodné pro úlohy, které vyžadují sekvenční zpracování dat
+
+5. Strom (Tree):
+   - Hierarchická datová struktura, která se skládá z uzlů propojených hranami
+   - Umožňuje efektivní vyhledávání, vkládání a mazání prvků v závislosti na konkrétním typu stromu (binární strom, AVL strom, B-strom, atd.)
+   - Vhodné pro úlohy, které vyžadují hierarchickou organizaci dat
+
+6. Graf (Graph):
+   - Datová struktura, která se skládá z uzlů (vrcholů) a hran mezi nimi
+   - Umožňuje reprezentovat složité vztahy mezi objekty
+   - Vhodné pro
+
+## Java primitivní typy a objekty:
+
+Primitivní typy:
+
+- Základní datové typy přímo zabudované do jazyka Java
+- Zahrnují celá čísla, desetinná čísla, znaky a logické hodnoty
+- Ukládány na zásobníku (stack) a předávány hodnotou
+- Primitivní typy v Javě zahrnují: `byte`, `short`, `int`, `long`, `float`, `double`, `char`, `boolean`
+
+Objekty:
+
+- Instance tříd definovaných v Javě nebo vlastních tříd vytvořených programátorem
+- Ukládány na haldě (heap) a předávány referencí
+- Objekty zahrnují všechny neprimitivní datové typy, jako jsou třídy, pole, kolekce a také tzv. "wrapper" třídy pro primitivní typy (např. `Integer`, `Double`, `Character`, `Boolean`)
+- Každý objekt je implicitně odvozen od třídy `Object`, která poskytuje základní metody pro všechny objekty
+
+Rozdíly mezi primitivními typy a objekty:
+1. Ukládání: Primitivní typy jsou ukládány na zásobníku, zatímco objekty na haldě
+2. Předávání: Primitivní typy jsou předávány hodnotou, objekty referencí
+3. Výchozí hodnoty: Primitivní typy mají výchozí hodnoty (např. 0 pro `int`, `false` pro `boolean`), zatímco objekty mají výchozí hodnotu `null`
+4. Metody: Objekty mohou mít metody a být součástí dědičnosti, primitivní typy nemají metody ani dědičnost
+5. Wrapper třídy: Pro každý primitivní typ existuje "wrapper" třída, která umožňuje pracovat s primitivním typem jako s objektem (např. `Integer` pro `int`, `Double` pro `double`)
+
+## Auto-boxing a unboxing:
+
+Auto-boxing:
+
+- Automatický proces převodu primitivního typu na jeho odpovídající "wrapper" třídu (objektový typ)
+- Java kompilátor provádí auto-boxing implicitně, když je to nutné
+- Příklad: Přiřazení primitivního typu `int` do objektového typu `Integer`
+
+Unboxing:
+
+- Automatický proces převodu "wrapper" třídy (objektového typu) na její odpovídající primitivní typ
+- Java kompilátor provádí unboxing implicitně, když je to nutné
+- Příklad: Přiřazení objektového typu `Integer` do primitivního typu `int`
+
+## Efektivita paměti složitých datových struktur:
+
+Efektivita paměti datových struktur závisí na:
+
+1. Režii paměti: Každá datová struktura vyžaduje určité množství paměti pro uložení dodatečných informací, jako jsou odkazy, ukazatele nebo metadata.
+2. Pevnosti velikosti: Některé datové struktury mají pevnou velikost, zatímco jiné mohou být dynamicky zvětšovány nebo zmenšovány podle potřeby.
+3. Vnitřní fragmentace: Vnitřní fragmentace nastává, když datová struktura má nevyužité části paměti, které nelze přiřadit jiným objektům.
+
+Příklady efektivity paměti některých složitých datových struktur:
+
+1. Binární vyhledávací strom (Binary Search Tree):
+   - Efektivní v případě, že je strom vyvážený
+   - Má režii paměti z důvodu ukládání odkazů na levý a pravý potomek pro každý uzel
+   - Může mít neefektivní využití paměti, pokud je strom silně nevyvážený
+
+2. Hash tabulka (Hash Table):
+   - Má režii paměti pro ukládání ukazatelů na prvky a pro správu kolizí
+   - Při správně nastavené velikosti tabulky a vhodné hashovací funkci může být efektivní z hlediska paměti
+   - Vnitřní fragmentace nastává, když je velikost tabulky příliš velká nebo malá vzhledem k počtu prvků
+
+3. Grafová reprezentace (Graph Representation):
+   - Matice sousednosti: Má režii paměti kvůli ukládání celé matice, i když je graf řídký (má málo hran)
+   - Seznam sousednosti: Má menší režii paměti než matice sousednosti, ale vyžaduje ukládání odkazů na seznamy sousedů pro každý vrchol
+   - Efektivita paměti závisí na hustotě grafu a způsobu reprezentace
+
+Optimalizace efektivity paměti:
+
+- Výběr vhodné datové struktury pro konkrétní problém, která minimalizuje režii paměti a vnitřní fragmentaci
+- V případě dynamických datových struktur správně nastavit velikost a strategii zvětšování/zmenšování, aby se minimalizovala fragmentace a režie paměti
+- Použití kompresních technik pro snížení paměťových nároků, pokud je to vhodné (např. komprese trie stromu)
+- Využití cache a paměťových návrhových vzorů pro zlepšení výkonu a efektivity paměti (např. LRU cache)
+- Provést analýzu paměti a ladění, aby se identifikovaly a odstranily úniky paměti nebo neefektivní využití paměti
+- Použití slabých referencí, soft referencí nebo phantom referencí pro zlepšení správy paměti a zamezení úniků paměti v Javě
+- V případě, že je to možné, sdílet části dat mezi různými datovými strukturami nebo instancemi, aby se snížila režie paměti (např. internování řetězců v Javě)
+
+
+Při návrhu a implementaci složitých datových struktur je důležité najít rovnováhu mezi efektivitou paměti, výkonem a čitelností kódu. Vybraná datová struktura by měla být vhodná pro konkrétní problém, snadno použitelná a rozšiřitelná a současně co nejméně náročná na paměť.
+
+## Kolekce pro výkon:
+
+Výběr správné kolekce pro výkon závisí na požadavcích na časovou složitost a paměťovou efektivitu konkrétního problému. Některé běžné kolekce v Javě a jejich výkonnostní charakteristiky:
+
+1. ArrayList:
+   - Rychlý přístup k prvkům pomocí indexu (O(1))
+   - Pomalejší přidávání a odebírání prvků uprostřed seznamu (O(n))
+   - Dynamicky se zvětšuje, když je kapacita překročena
+
+2. LinkedList:
+   - Rychlé přidávání a odebírání prvků na začátku a konci seznamu (O(1))
+   - Pomalejší přístup k prvkům pomocí indexu (O(n))
+   - Vyšší režie paměti kvůli ukládání odkazů na předchozí a následující prvky
+
+3. HashSet:
+   - Rychlé přidávání, odebírání a vyhledávání prvků (průměrně O(1))
+   - Nepodporuje žádné pořadí prvků
+   - Vyšší režie paměti než ArrayList, ale nižší než LinkedList
+
+4. TreeSet:
+   - Rychlé přidávání, odebírání a vyhledávání prvků (O(log n))
+   - Udržuje prvky seřazené podle jejich přirozeného řazení nebo podle komparátoru
+   - Vyšší režie paměti než HashSet
+
+5. HashMap:
+   - Rychlý přístup, přidávání a odebírání klíč-hodnota párů (průměrně O(1))
+   - Nepodporuje žádné pořadí klíčů ani hodnot
+   - Vyšší režie paměti než ArrayList, ale nižší než LinkedList
+
+6. TreeMap:
+   - Rychlý přístup, přidávání a odebírání klíč-hodnota párů (O(log n))
+   - Udržuje klíče seřazené podle jejich přirozeného řazení nebo podle komparátoru
+   - Vyšší režie paměti než HashMap
+
+Při výběru kolekce pro výkon zvažte následující faktory:
+
+1. Požadovaná časová složitost operací (přístup, přidávání, odebírání, vyhledávání)
+2. Pořadí prvků (potřeba udržovat prvky seřazené nebo ne)
+3. Paměťová efektivita (režie paměti a dynamické zvětšování/zmenšování)
+4. Podpora pro konkurenci a synchronizaci (např. ConcurrentHashMap pro bezpečné použití ve vícevláknovém prostředí)
+
+## Typově specifické kolekce:
+
+Typově specifické kolekce jsou kolekce, které jsou navrženy pro ukládání primitivních datových typů nebo konkrétních tříd. Použití těchto kolekcí může zlepšit výkon a snížit režii paměti, protože se eliminuje potřeba autoboxingu a unboxingu.
+
+Některé příklady typově specifických kolekcí:
+
+1. Trove knihovna (Java):
+   - Poskytuje kolekce pro primitivní typy, jako jsou TIntArrayList, TDoubleHashSet, TObjectIntHashMap atd.
+   - Nabízí nižší režii paměti a rychlejší operace než standardní Java kolekce
+
+2. FastUtil knihovna (Java):
+   - Poskytuje kolekce pro primitivní typy, jako jsou LongArrayList, Int2ObjectOpenHashMap, DoubleLinkedOpenHashSet atd.
+   - Nabízí nízkoúrovňové kolekce pro rychlý přístup a manipulaci s daty
+   - Rychlejší než standardní Java kolekce a podporuje vysokou kompresi dat
+
+3. Apache Commons Primitives (Java):
+   - Poskytuje kolekce pro primitivní typy, jako jsou IntList, DoubleStack, ObjectIntMap atd.
+   - Snadné použití a integrace se standardními Java kolekcemi
+
+4. Eclipse Collections (Java):
+   - Poskytuje kolekce pro primitivní typy i objekty, jako jsou IntArrayList, LongHashSet, MutableObjectIntMap atd.
+   - Bohatá API pro práci s daty a pokročilé funkce, jako jsou paralelní zpracování, lazy evaluace, atd.
+
+5. C++ Standard Template Library (STL):
+   - Poskytuje kolekce pro primitivní typy i třídy, jako jsou vector, list, set, map, atd.
+   - Přizpůsobitelné a rozšiřitelné pomocí šablon a vlastních komparátorů nebo alokátorů
+
+Při výběru typově specifických kolekcí zvažte následující faktory:
+
+1. Výkon: Typově specifické kolekce mohou poskytnout rychlejší operace a nižší režii paměti než obecné kolekce
+2. Integrace: Zkontrolujte, jak snadno lze typově specifickou kolekci integrovat do vaší aplikace a jak dobře spolupracuje se standardními kolekcemi nebo knihovnami
+3. Kompatibilita: Ujistěte se, že typově specifická kolekce je kompatibilní s vaší verzí jazyka a platformy
+4. Podpora a údržba: Zvažte úroveň podpory a údržby pos
+
+## Otevřené adresování hashování:
+
+Otevřené adresování hashování je metoda řešení kolizí v hash tabulkách, která nevyžaduje použití externích datových struktur (např. seznamů) pro ukládání prvků s kolizí. Místo toho jsou všechny prvky uloženy přímo v hash tabulce. 
+
+Klíčové vlastnosti otevřeného adresování hashování:
+
+1. Kolize řešeny prostřednictvím sekvenčního hledání volného místa v hash tabulce
+2. Různé metody pro hledání volného místa:
+   - Lineární sondování: Při kolizi se postupně prochází následující pozice, dokud není nalezeno volné místo
+   - Kvadratické sondování: Při kolizi se skáče na pozice s rostoucími kvadratickými intervaly, dokud není nalezeno volné místo
+   - Dvojité hashování: Při kolizi se použije druhá hashovací funkce pro určení intervalu skoků, dokud není nalezeno volné místo
+3. Prostorová efektivita: Otevřené adresování hashování může mít nižší režii paměti než hashování s řetězci, protože nevyžaduje externí datové struktury
+4. Výkon: Otevřené adresování hashování může být rychlejší než hashování s řetězci, pokud je kolizí málo a tabulka má dostatečnou kapacitu
+5. Nutnost udržovat nízký faktor zatížení (počet prvků vůči kapacitě tabulky) pro udržení dobrého výkonu
+
+Při použití otevřeného adresování hashování je důležité zajistit, že hash tabulka má dostatečnou kapacitu a je pravidelně zvětšována nebo zmenšována podle počtu prvků. To pomáhá minimalizovat počet kolizí a udržet dobrou efektivitu vyhledávání, přidávání a odebírání prvků.
+
+## Schémata řešení kolizí
+
+Schémata řešení kolizí jsou metody, které se používají k řešení kolizí v hash tabulkách. Kolize nastávají, když dva různé prvky mají stejnou hash hodnotu nebo jsou mapovány na stejnou pozici v tabulce. Zde jsou některá základní schémata řešení kolizí:
+
+1. Řetězení (Chaining):
+   - Každá pozice v hash tabulce obsahuje ukazatel na externí datovou strukturu (např. spojový seznam nebo strom)
+   - Při kolizi se nový prvek přidá do datové struktury spojené s danou pozicí
+   - Výhody: Jednoduché řešení, které umožňuje vysoký faktor zatížení
+   - Nevýhody: Vyžaduje více paměti pro externí datové struktury a může způsobit zpomalení při mnoha kolizích
+
+2. Otevřené adresování (Open Addressing):
+   - Všechny prvky jsou uloženy přímo v hash tabulce
+   - Při kolizi se hledá volné místo v tabulce pomocí různých metod (např. lineární sondování, kvadratické sondování, dvojité hashování)
+   - Výhody: Nižší režie paměti a může být rychlejší než řetězení, pokud je kolizí málo
+   - Nevýhody: Nutnost udržovat nízký faktor zatížení a složitější řešení
+
+3. Koalescentní hashování (Coalesced Hashing):
+   - Kombinuje vlastnosti řetězení a otevřeného adresování
+   - Při kolizi se nový prvek přidá na volné místo v tabulce a spojí se s předchozím prvkem v kolizním řetězci
+   - Výhody: Lepší využití paměti než řetězení a může být rychlejší než otevřené adresování
+   - Nevýhody: Složitější implementace a může být pomalejší než otevřené adresování při nízkém faktoru zatížení
+
+4. Perfect hashing (Perfektní hashování):
+   - Používá dvě úrovně hashovacích funkcí pro zajištění, že nebudou žádné kolize
+   - První úroveň rozděluje prvky do skupin, druhá úroveň použije samostatnou hashovací funkci pro každou
+
 ## Bloom filters, complexity, false positives, Bloom filter extensions
-## Reference types - weak, soft phantom
+
+Bloom filtry:
+
+Bloom filtry jsou pravděpodobnostní datové struktury, které umožňují testování přítomnosti prvku v množině. Bloom filtry používají více hashovacích funkcí a bitové pole pro uložení informací o prvcích.
+
+Složitost:
+
+- Vkládání: O(k), kde k je počet hashovacích funkcí
+- Hledání: O(k), kde k je počet hashovacích funkcí
+
+Falešné pozitivy:
+
+- Bloom filtry mohou vrátit falešné pozitivy (tvrdit, že prvek je v množině, i když tam není), ale nikdy nevracejí falešné negativy (tvrdit, že prvek není v množině, když tam je)
+- Pravděpodobnost falešných pozitiv závisí na velikosti bitového pole, počtu hashovacích funkcí a počtu prvků v množině
+- Pro zajištění nízké pravděpodobnosti falešných pozitiv je nutné správně naladit parametry Bloom filtru (velikost bitového pole a počet hashovacích funkcí)
+
+Rozšíření Bloom filtrů:
+
+1. Scalable Bloom Filters (Škálovatelné Bloom filtry):
+   - Umožňují dynamicky přizpůsobovat velikost bitového pole a počet hashovacích funkcí podle počtu prvků v množině
+   - Zajišťují konstantní pravděpodobnost falešných pozitiv při růstu množiny
+
+2. Counting Bloom Filters (Počítací Bloom filtry):
+   - Rozšiřují klasické Bloom filtry tím, že udržují počet výskytů prvku místo jednoduché přítomnosti
+   - Umožňují přidávání i odebírání prvků, avšak za cenu vyšší režie paměti
+
+3. Cuckoo Filters (Kukaččí filtry):
+   - Vylepšení Bloom filtrů, které umožňují efektivnější práci s pamětí a poskytují lepší výkon pro testování přítomnosti prvku v množině
+   - Používají kukaččí hashování pro řešení kolizí a udržují pouze část informací o prvku (např. fingerprint)
+
+4. Invertible Bloom Lookup Tables (Invertibilní Bloom vyhledávací tabulky):
+   - Rozšiřují Bloom filtry tím, že umožňují ukládat a získávat páry klíč-hodnota
+   - Umožňují pok
+
+
+## Reference types - weak, soft, phantom
 ## JVM object allocation
 ## Thread-local allocation buffers
 ## Object escape analysis
