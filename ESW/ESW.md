@@ -998,32 +998,583 @@ Rozšíření Bloom filtrů:
 
 4. Invertible Bloom Lookup Tables (Invertibilní Bloom vyhledávací tabulky):
    - Rozšiřují Bloom filtry tím, že umožňují ukládat a získávat páry klíč-hodnota
-   - Umožňují pok
+   - Umožňují pokročilé operace, jako je sjednocení, průnik a rozdíl mezi množinami klíčů a hodnot
+   - Využívají lineární sondování a kompresi dat pro efektivní využití paměti a rychlé vyhledávání 
+  
+5. Space-saving Bloom Filters (Úsporné Bloom filtry):
+   - Optimalizují paměťovou náročnost Bloom filtrů tím, že dynamicky přizpůsobují velikost bitového pole a počet hashovacích funkcí
+   - Využívají metody pro odhad pravděpodobnosti falešných pozitiv a minimalizují paměťovou režii při udržení požadované úrovně přesnosti
 
+6. DLeft Counting Bloom Filters (DLeft Počítací Bloom filtry):
+   - Kombinují vlastnosti DLeft hashování a počítacích Bloom filtrů pro efektivní ukládání a vyhledávání páry klíč-hodnota
+   - Umožňují přidávání, odebírání a aktualizaci prvků s nízkou pravděpodobností falešných pozitiv a efektivním využitím paměti
+
+7. Layered Bloom Filters (Vrstvené Bloom filtry):
+   - Využívají více vrstev Bloom filtrů s různými parametry pro rychlé vyhledávání a eliminaci falešných pozitiv
+   - Umožňují postupně zvyšovat přesnost vyhledávání při zachování rychlosti a efektivnosti paměti
+
+Tyto rozšíření Bloom filtrů řeší různé úkoly a výzvy spojené s testováním přítomnosti prvku v množině, přičemž každé rozšíření se zaměřuje na konkrétní aspekt, jako je škálovatelnost, dynamické přidávání a odebírání prvků, efektivita paměti nebo podpora pro práci s páry klíč-hodnota.
 
 ## Reference types - weak, soft, phantom
-## JVM object allocation
-## Thread-local allocation buffers
-## Object escape analysis
-## Data locality
-## Non-uniform memory allocation
-## Networking
-## OSI model
-## C10K problem
-## Blocking and non-blocking input/output
-## Threading server
-## Event-driven server
+
+1. Silné reference (Strong references):
+   - Běžné reference, které používáme při práci s objekty
+   - Pokud je objekt dosažitelný přes silnou referenci, nebude uvolněn garbage collectorem
+
+2. Slabé reference (Weak references):
+   - Vytváříme je pomocí třídy `java.lang.ref.WeakReference`
+   - Pokud je objekt dosažitelný pouze přes slabé reference, může být kdykoliv uvolněn garbage collectorem
+   - Často používány pro implementaci cache, která se automaticky uvolní při nedostatku paměti
+
+3. Měkké reference (Soft references):
+   - Vytváříme je pomocí třídy `java.lang.ref.SoftReference`
+   - Pokud je objekt dosažitelný pouze přes měkké reference, může být uvolněn garbage collectorem, ale pouze pokud je potřeba uvolnit paměť
+   - Užitečné pro implementaci cache, která se udržuje v paměti, dokud není potřeba uvolnit prostředky
+
+4. Fantomové reference (Phantom references):
+   - Vytváříme je pomocí třídy `java.lang.ref.PhantomReference`
+   - Neslouží k přístupu k objektu, ale pouze k zaznamenání, že byl objekt uvolněn garbage collectorem
+   - Užitečné pro sledování životního cyklu objektů a provádění úklidu po uvolnění objektu
+
+Tyto různé typy referencí nám umožňují pracovat s objekty v Javě různými způsoby a ovlivňovat chování garbage collectoru při uvolňování paměti. Slabé, měkké a fantomové reference nám umožňují vytvářet pokročilé datové struktury a algoritmy, které pracují efektivně s omezenými zdroji a reagují na potřeby aplikace.
+
+## Alokace objektů v JVM:
+
+1. Mladá generace (Young Generation):
+   - Většina objektů je alokována v mladé generaci
+   - Mladá generace se dělí na tři části:
+     - Eden: místo, kde jsou všechny nové objekty alokovány
+     - Survivor 1 (S0) a Survivor 2 (S1): slouží k ukládání objektů, které přežily garbage collection v Eden prostoru
+
+2. Alokace objektu:
+   - Objekt je nejprve alokován v Eden prostoru
+   - Pokud Eden prostor dosáhne kapacity, spustí se garbage collection (tzv. minor GC) pro mladou generaci
+   - Objekty, které přežijí minor GC, jsou přesunuty do jednoho z Survivor prostorů (S0 nebo S1)
+
+3. Promoci objektu do staré generace:
+   - Pokud objekt přežije určitý počet minor GC (záleží na nastavení JVM), je promován do staré generace
+   - Stará generace obsahuje objekty, které přežily více garbage collection a jsou pravděpodobněji dlouhodobě používány
+
+4. Alokace velkých objektů:
+   - Velké objekty, které nemohou být alokovány v mladé generace, jsou přímo alokovány v staré generaci
+
+5. Garbage collection pro starou generaci:
+   - Pokud stará generace dosáhne kapacity, spustí se garbage collection (tzv. major GC nebo full GC) pro celou heap
+   - Major GC je náročnější na výkon a trvá déle než minor GC
+
+Alokace objektů v JVM je optimalizována pro efektivní správu paměti a rychlé uvolňování krátkodobě žijících objektů. Garbage collector a generace paměti pomáhají minimalizovat dopad na výkon při uvolňování paměti.
+
+## Thread-Local Allocation Buffers (TLAB)
+
+1. Co je TLAB?
+   - TLAB je část paměti Eden prostoru v mladé generaci, která je vyhrazena pro alokaci objektů jednoho konkrétního vlákna
+   - Každé vlákno má svůj vlastní TLAB, což umožňuje alokovat objekty rychleji bez nutnosti synchronizace mezi vlákny
+
+2. Výhody TLAB:
+   - Snížení režie spojené s synchronizací vláken při alokaci objektů
+   - Rychlejší alokace objektů, protože každé vlákno může alokovat objekty ve svém TLAB bez čekání na ostatní vlákna
+   - Zlepšení výkonu aplikací s vysokou mírou paralelismu a vytvářením objektů
+
+3. Jak TLAB funguje?
+   - Při inicializaci JVM se pro každé vlákno vytvoří TLAB v Eden prostoru
+   - Každé vlákno alokuje objekty pouze ve svém TLAB
+   - Pokud je TLAB jednoho vlákna plný, může být přidělena nová část paměti z Eden prostoru, nebo se může spustit garbage collection
+
+4. Nastavení a ladění TLAB:
+   - Velikost TLAB může být nastavena pomocí JVM parametrů, např. `-XX:TLABSize=<velikost>`
+   - Pro ladění TLAB lze použít JVM parametry, např. `-XX:+PrintTLAB` pro výpis informací o TLAB do logu
+
+TLAB zvyšuje výkon JVM tím, že minimalizuje režii spojenou s alokací objektů v paralelním prostředí. Tím se zlepšuje celková efektivita paměti a výkon aplikací s vysokou mírou vytváření objektů.
+
+## Analýza úniku objektů (Object Escape Analysis):
+
+1. Co je analýza úniku objektů?
+   - Optimalizační technika používaná JVM pro identifikaci objektů, které neuniknou z aktuálního kontextu metody nebo vlákna
+   - Pokud objekt neunikne, může JVM optimalizovat jeho alokaci a synchronizaci, což zlepšuje výkon aplikace
+
+2. Výhody analýzy úniku objektů:
+   - Snížení režie spojené s alokací objektů na haldě
+   - Odstranění zbytečných synchronizací, které nejsou potřeba pro objekty, které neuniknou z aktuálního kontextu
+   - Možnost alokovat objekty na zásobníku místo na haldě, což zlepšuje výkon a zjednodušuje práci garbage collectoru
+
+3. Jak analýza úniku objektů funguje?
+   - JVM analyzuje kód aplikace za běhu nebo při kompilaci a identifikuje objekty, které neuniknou z aktuálního kontextu metody nebo vlákna
+   - Pokud objekt neunikne, JVM může provést následující optimalizace:
+     - Alokace objektu na zásobníku místo na haldě
+     - Odstranění zbytečných synchronizací na objektu
+     - Optimalizace práce garbage collectoru
+
+4. Nastavení a ladění analýzy úniku objektů:
+   - Analýza úniku objektů je ve většině JVM aktivována automaticky
+   - Pro ladění analýzy úniku objektů lze použít JVM parametry, např. `-XX:+DoEscapeAnalysis` pro zapnutí analýzy úniku objektů
+
+Analýza úniku objektů je důležitá optimalizační technika, která zlepšuje výkon a efektivitu paměti aplikací. Pomáhá JVM identifikovat objekty, které neuniknou z aktuálního kontextu, a provádět optimalizace, které snižují režii spojenou s alokací objektů a synchronizací.
+
+
+## Lokalita dat (Data Locality):
+
+1. Co je lokalita dat?
+   - Lokalita dat se týká organizace dat v paměti tak, aby byla přístupná rychle a efektivně
+   - Zaměřuje se na způsob, jakým jsou data uložena a uspořádána v paměti, aby byla minimalizována doba přístupu a režie
+   - Existují dva druhy lokality dat: lokalita v čase a lokalita v prostoru
+
+2. Lokalita v čase (Temporal Locality):
+   - Pokud je prvek použit, je pravděpodobné, že bude opět použit v blízké budoucnosti
+   - Optimalizace: ukládání často používaných dat v rychlých cache pamětech
+
+3. Lokalita v prostoru (Spatial Locality):
+   - Pokud je prvek použit, je pravděpodobné, že budou použity i jeho sousední prvky v blízké budoucnosti
+   - Optimalizace: načítání bloků dat do cache paměti, které obsahují i sousední prvky
+
+4. Výhody lokality dat:
+   - Zlepšení výkonu aplikace díky rychlejšímu přístupu k datům
+   - Efektivnější využití cache paměti a minimalizace cache miss
+   - Menší režie spojená s načítáním a ukládáním dat
+
+5. Aplikace lokality dat v programování:
+   - Použití kontiguálních datových struktur (např. pole) místo spojových datových struktur (např. spojový seznam)
+   - Uspořádání dat v paměti podle přístupových vzorů (např. skupinování souvisejících dat dohromady)
+   - Optimalizace smyček a algoritmů pro využití lokality dat (např. procházení pole po řádcích nebo sloupcích)
+
+Lokalita dat je klíčovým aspektem optimalizace výkonu aplikací. Správné uspořádání a organizace dat v paměti může významně zlepšit výkon aplikace a minimalizovat režii spojenou s načítáním a ukládáním dat.
+
+## Nerovnoměrná alokace paměti (Non-Uniform Memory Allocation, NUMA):
+
+1. Co je nerovnoměrná alokace paměti (NUMA)?
+   - NUMA je architektura paměti, která se používá v multiprocesorových systémech, kde je přístup k paměti různě rychlý v závislosti na vzdálenosti mezi procesorem a pamětí
+   - Cílem NUMA je zlepšit výkon a škálovatelnost systému tím, že se sníží režie spojená s přístupem k paměti
+
+2. Jak NUMA funguje?
+   - V NUMA architektuře je paměť rozdělena do několika menších paměťových uzlů, které jsou připojeny k procesorům
+   - Každý procesor má rychlejší přístup k paměti ve svém vlastním uzlu a pomalejší přístup k paměti v ostatních uzlech
+   - Při alokaci paměti se pokouší NUMA alokovat paměť v uzlu, který je nejblíže procesoru, který bude paměť používat
+
+3. Výhody NUMA:
+   - Zlepšení výkonu a škálovatelnosti multiprocesorových systémů díky rychlejšímu přístupu k lokální paměti
+   - Menší režie spojená s přístupem k paměti, protože paměťová komunikace probíhá většinou uvnitř uzlů
+   - Možnost efektivnějšího využití cache paměti
+
+4. Nevýhody NUMA:
+   - Složitější správa paměti a plánování procesů
+   - Potenciální problémy s latencí a propustností při přístupu k vzdálené paměti
+   - Vyšší nároky na hardware a softwarovou podporu
+
+5. Jak optimalizovat aplikace pro NUMA?
+   - Správné rozdělení práce mezi procesory a jejich lokálními paměťovými uzly
+   - Využití NUMA-optimálních knihoven a funkcí pro správu paměti
+   - Monitorování a ladění výkonu aplikace v NUMA systémech
+
+Nerovnoměrná alokace paměti (NUMA) je architektura paměti používaná v multiprocesorových systémech pro zlepšení výkonu a škálovatelnosti. Správné využití NUMA může významně zlepšit výkon aplikace v multiprocesorových prostředích.
+
+## OSI model (Open Systems Interconnection):
+
+1. Co je OSI model?
+   - OSI model je konceptuální rámec, který popisuje, jak různé vrstvy komunikačního systému spolupracují při přenosu dat mezi síťovými zařízeními
+   - Model se skládá ze 7 vrstev, které definují různé úrovně abstrakce a funkcí komunikačního procesu
+
+2. Seznam vrstev OSI modelu:
+   1. Fyzická vrstva (Physical Layer)
+   2. Linková vrstva (Data Link Layer)
+   3. Síťová vrstva (Network Layer)
+   4. Transportní vrstva (Transport Layer)
+   5. Relační vrstva (Session Layer)
+   6. Prezentační vrstva (Presentation Layer)
+   7. Aplikační vrstva (Application Layer)
+
+3. Popis vrstev OSI modelu:
+   1. Fyzická vrstva:
+      - Zajišťuje přenos a přijímání bitů přes fyzické médium (např. kabel, rádiové vlny)
+      - Definuje fyzické charakteristiky konektorů, kabelů a signálů
+
+   2. Linková vrstva:
+      - Řeší přenos datových rámců mezi sousedními uzly v síti
+      - Zajišťuje kontrolu chyb a řízení toku dat
+
+   3. Síťová vrstva:
+      - Zajišťuje směrování a přeposílání datových paketů mezi různými sítěmi
+      - Spravuje adresování a segmentaci dat
+
+   4. Transportní vrstva:
+      - Zajišťuje spolehlivý přenos dat mezi koncovými uzly
+      - Řídí tok dat, kontrolu chyb a obnovu ztracených dat
+
+   5. Relační vrstva:
+      - Řídí spojení mezi aplikacemi a zajišťuje jejich správnou funkci
+      - Udržuje a ukončuje komunikační relace
+
+   6. Prezentační vrstva:
+      - Zajišťuje převod dat mezi aplikacemi a síťovým formátem
+      - Řídí kódování, kompresi a šifrování dat
+
+   7. Aplikační vrstva:
+      - Poskytuje rozhraní mezi aplikacemi a komunikačními službami
+      - Zajišťuje přístup k síťovým službám, jako jsou e-mail, webové stránky a databáze
+
+OSI model je důležitým konceptem v oblasti počítačových sítí, který pomáhá porozumět základním principům komunikace mezi síťovými zař
+
+## Problém C10K
+
+1. Co je problém C10K?
+   - Problém C10K je výkonový problém spojený se schopností serveru zvládat více než 10 000 současných síťových spojení
+   - Tento problém byl poprvé popsán v roce 1999 a odráží výzvy spojené s růstem počtu uživatelů a potřeby serverů zvládat více spojení
+
+2. Příčiny problému C10K:
+   - Omezení výkonu způsobená tradičními síťovými modely (jako je model jeden proces/jeden vlákno na jedno spojení)
+   - Vysoká režie spojená s vytvářením a zrušením vláken nebo procesů pro každé spojení
+   - Nedostatek operačního systému a hardwarové podpory pro vysoký počet současných spojení
+
+3. Řešení problému C10K:
+   - Použití vícevláknových nebo asynchronních modelů serverů, které mohou zpracovávat více spojení pomocí méně zdrojů
+   - Využití funkce epoll (Linux) nebo kqueue (BSD, macOS) pro efektivní sledování stavu více síťových spojení
+   - Použití non-blocking I/O operací, které umožňují serveru pokračovat v práci, zatímco čeká na dokončení I/O operace
+   - Optimalizace operačního systému a hardwaru pro zvýšení propustnosti a snížení režie spojené s přenosem dat
+
+4. Význam řešení problému C10K:
+   - Zlepšení výkonu serverů a schopnosti zvládat vyšší zátěž
+   - Zajištění škálovatelnosti serverů, které mohou růst spolu s počtem uživatelů a potřebami aplikací
+   - Umožnění efektivnějšího využití zdrojů serverů, což vede ke snížení nákladů na provoz a správu
+
+Problém C10K odráží výzvy spojené se zvládáním velkého počtu současných síťových spojení na serverech. Řešení tohoto problému zahrnuje použití vícevláknových, asynchronních nebo non-blocking modelů serverů, optimalizaci operačního systému a hardwaru a využití pokročilých technologií pro sledování a správu síťových spojení.
+
+
+## Blocking a non-blocking I/O (vstup/výstup):
+
+1. Co je blocking I/O?
+   - Blocking I/O je metoda vstupu/výstupu, při které se vykonávání programu zastaví, dokud nebude dokončena I/O operace
+   - Během čekání na dokončení I/O operace je proces nebo vlákno blokováno a nemůže vykonávat žádné další úkoly
+
+2. Co je non-blocking I/O?
+   - Non-blocking I/O je metoda vstupu/výstupu, při které se vykonávání programu nepozastavuje, dokud nebude dokončena I/O operace
+   - Místo čekání na dokončení I/O operace může proces nebo vlákno pokračovat v jiných úkolech a zpět ke zpracování I/O operace se vrátí, až bude hotova
+
+3. Porovnání blocking a non-blocking I/O:
+   - Výkon: Non-blocking I/O může zlepšit výkon aplikací tím, že minimalizuje čas strávený čekáním na dokončení I/O operací
+   - Složitost: Blocking I/O je jednodušší na implementaci a pochopení, zatímco non-blocking I/O vyžaduje více pozornosti k správě asynchronních operací
+   - Vhodnost: Blocking I/O je vhodný pro aplikace, kde je čekání na I/O operace přijatelné nebo očekávané, zatímco non-blocking I/O je vhodný pro aplikace, které vyžadují vysokou propustnost a odezvu
+
+4. Příklady použití blocking a non-blocking I/O:
+   - Blocking I/O: Jednoduché servery, které obsluhují malý počet klientů nebo aplikace, které nevyžadují vysokou propustnost
+   - Non-blocking I/O: Webové servery, databázové servery nebo aplikace, které obsluhují velké množství současných spojení nebo vyžadují rychlou odezvu
+
+Blocking a non-blocking I/O představují dva různé přístupy k vstupu/výstupu v aplikacích. Blocking I/O je jednodušší na implementaci, ale může vést k nižšímu výkonu. Non-blocking I/O poskytuje lepší výkon, ale vyžaduje více pozornosti k správě asynchronních operací.
+
+## Vícevláknový server (Threading server):
+
+1. Co je vícevláknový server?
+   - Vícevláknový server je typ serveru, který používá více vláken pro obsluhu více klientů nebo požadavků současně
+   - Každé vlákno zpracovává jeden nebo více klientů nezávisle na ostatních vláknech
+
+2. Výhody vícevláknového serveru:
+   - Lepší využití zdrojů: Vícevláknový server může efektivněji využívat zdroje procesoru a paměti, což zlepšuje výkon a propustnost
+   - Rychlejší odezva: Vícevláknový server může poskytovat rychlejší odezvu na požadavky klientů, protože jednotlivá vlákna mohou pracovat paralelně a zpracovávat více požadavků současně
+   - Škálovatelnost: Vícevláknový server může lépe zvládat zvýšenou zátěž, protože může vytvářet a zrušit vlákna podle potřeby
+
+3. Nevýhody vícevláknového serveru:
+   - Složitost: Vícevláknový server může být složitější na implementaci a správu, protože vyžaduje koordinaci a synchronizaci mezi vlákny
+   - Režie: Vytváření a zrušení vláken může způsobit režii, která může snížit výkon serveru
+   - Sdílené prostředky: Vlákna musí sdílet prostředky, jako je paměť a procesor, což může vést k problémům s výkonem a synchronizací
+
+4. Použití vícevláknového serveru:
+   - Vícevláknový server je vhodný pro aplikace, které vyžadují vysokou propustnost a rychlou odezvu, jako jsou webové servery, databázové servery nebo aplikace pro zpracování videa
+
+Vícevláknový server představuje přístup k zpracování požadavků klientů, který umožňuje lepší využití zdrojů a rychlejší odezvu. Je vhodný pro aplikace, které vyžadují vysokou propustnost a rychlou odezvu, ale může být složitější na implementaci a správu než jednovláknové servery.
+
+## Událostmi řízený server (Event-driven server):
+
+1. Co je událostmi řízený server?
+   - Událostmi řízený server je typ serveru, který zpracovává požadavky klientů na základě událostí, jako jsou příchozí data nebo změny stavu spojení
+   - Server reaguje na události pomocí asynchronních I/O operací a zpracovává požadavky klientů bez potřeby vytvářet samostatná vlákna nebo procesy pro každé spojení
+
+2. Výhody událostmi řízeného serveru:
+   - Nižší režie: Událostmi řízený server má nižší režii než vícevláknový server, protože nepotřebuje vytvářet a zrušit vlákna pro každé spojení
+   - Škálovatelnost: Událostmi řízený server může zvládat velký počet současných spojení s menšími nároky na systémové zdroje
+   - Jednodušší koordinace: Událostmi řízený server může být jednodušší na koordinaci a správu než vícevláknový server, protože většina operací je asynchronní a nemusí být koordinována s ostatními vlákny
+
+3. Nevýhody událostmi řízeného serveru:
+   - Složitost: Událostmi řízený server může být složitější na implementaci, protože vyžaduje správu asynchronních událostí a I/O operací
+   - Výkon: Událostmi řízený server může mít nižší výkon než vícevláknový server, pokud je zátěž serveru nevyvážená nebo pokud server musí provádět náročné výpočetní úkoly
+
+4. Použití událostmi řízeného serveru:
+   - Událostmi řízený server je vhodný pro aplikace, které potřebují zvládat velké množství současných spojení s nízkou režií, jako jsou webové servery, proxy servery nebo aplikace pro zpracování zpráv
+
+Událostmi řízený server představuje přístup k zpracování požadavků klientů, který se zaměřuje na asynchronní I/O operace a reaguje na události, jako jsou příchozí data nebo změny stavu spojení. Je vhodný pro aplikace, které potřebují zvládat velké množství současných spo
+
 ## Event-based input/output approaches
-## Native buffers in JVM
-## Channels and selectors
-## Synchronization in multi-threaded programs (atomic operations, mutex, semaphore,rw-lock,spinlock,RCU). When to use which mechanism? Performance bottlenecks of the mentioned mechanisms
-## Synchronization in “read-mostly workloads”, advantages and disadvantages of different synchronization mechanisms
-## Cache-efficient data structures and algorithms (e.g. matrix multiplication)
-## Principles of cache memories different kinds of cache misses
-## Self-evicting code
-## false sharing – what is it and how deal with it?
-## Profiling and optimizations of programs in compiled languages (e.g.C/C++)
-## Hardware performance counters
+
+Přístupy k událostmi řízenému vstupu/výstupu (Event-based input/output):
+
+1. Co je událostmi řízený vstup/výstup (event-based I/O)?
+   - Událostmi řízený vstup/výstup je asynchronní způsob zpracování I/O operací, který reaguje na události, jako jsou příchozí data nebo změny stavu spojení
+   - Tento přístup umožňuje efektivně zpracovávat velké množství současných spojení s nízkou režií a vysokou propustností
+
+2. Přístupy k událostmi řízenému vstupu/výstupu:
+
+   a) Reactor pattern (Reaktor vzor):
+      - Reaktor vzor je návrhový vzor, který řídí událostmi řízený vstup/výstup pomocí jednoho nebo více demultiplexorů událostí
+      - Demultiplexor událostí sleduje události na více I/O zdrojích a spouští příslušné obslužné rutiny, které zpracovávají události
+      - Reaktor vzor je vhodný pro aplikace s malým počtem současných spojení, které vyžadují rychlou odezvu na události
+
+   b) Proactor pattern (Proaktor vzor):
+      - Proaktor vzor je návrhový vzor, který řídí událostmi řízený vstup/výstup pomocí asynchronních I/O operací a plánovače událostí
+      - Plánovač událostí zodpovídá za řízení a spouštění asynchronních I/O operací a obslužných rutin, které zpracovávají události
+      - Proaktor vzor je vhodný pro aplikace s velkým počtem současných spojení, které vyžadují vysokou propustnost a efektivní využití systémových zdrojů
+
+3. Porovnání událostmi řízených přístupů k vstupu/výstupu:
+   - Reactor pattern:
+      - Výhody: Jednodušší na implementaci, rychlá odezva na události
+      - Nevýhody: Nižší propustnost při velkém počtu současných spojení, vyšší režie při demultiplexingu událostí
+   - Proactor pattern:
+      - Výhody: Vysoká propustnost, efektivní využití systémových zdrojů, snížená režie při zpracování událostí
+      - Nevýhody: Složitější na implementaci, může vyžadovat specifickou podporu asynchronních I/O operací ze strany operačního systému
+
+4. Použití událostmi řízených přístupů k vstupu/výstupu:
+   - Událostmi řízené přístupy k vstupu/výstupu se používají v širokém spektru aplikací, které vyžadují efektivní zpracování velkého počtu současných spojení, jako jsou webové servery, proxy servery, aplikace pro zpracování zpráv nebo databázové servery
+
+Událostmi řízené přístupy k vstupu/výstupu, jako jsou Reactor a Proactor vzory, umožňují efektivně zpracovávat velké množství současných spojení s nízkou režií a vysokou propustností. Tyto přístupy se používají v širokém spektru aplikací, které vyžadují efektivní zpracování velkého počtu současných spojení, jako jsou webové servery, proxy servery, aplikace pro zpracování zpráv nebo databázové servery.
+
+## Nativní buffery v JVM (Java Virtual Machine):
+
+1. Co jsou nativní buffery?
+   - Nativní buffery jsou oblasti paměti mimo Java heap, které slouží k ukládání a manipulaci s daty v rámci JVM
+   - Tyto buffery mohou být přímo přístupné pro nativní kód a operační systém, což umožňuje rychlejší a efektivnější zpracování dat než při použití běžných Java objektů
+
+2. Výhody nativních bufferů v JVM:
+   - Rychlost: Nativní buffery umožňují rychlejší zpracování dat, protože nejsou omezeny Java garbage collector a nemusí být kopírovány mezi Java heap a nativní pamětí
+   - Efektivita: Nativní buffery umožňují efektivnější využití systémových zdrojů, jako je paměť a I/O, protože mohou být přímo přístupné pro nativní kód a operační systém
+   - Kompatibilita: Nativní buffery usnadňují interakci mezi Java kódem a nativními knihovnami nebo operačním systémem, což umožňuje vytvářet výkonnější a škálovatelnější aplikace
+
+3. Použití nativních bufferů v JVM:
+   - Nativní buffery se často používají v JVM pro zlepšení výkonu a efektivity aplikací, které pracují s velkým množstvím dat nebo potřebují přímý přístup k nativním knihovnám a operačnímu systému
+   - Typické příklady zahrnují síťové I/O operace, grafické a multimediální aplikace, databázové servery nebo výkonnostně náročné výpočty
+
+Nativní buffery v JVM umožňují rychlejší a efektivnější zpracování dat než při použití běžných Java objektů, protože nejsou omezeny Java garbage collector a mohou být přímo přístupné pro nativní kód a operační systém. Tyto buffery se často používají pro zlepšení výkonu a efektivity aplikací, které pracují s velkým množstvím dat nebo potřebují přímý přístup k nativním knihovnám a operačnímu systému.
+
+## Kanály a selektory:
+
+1. Co jsou kanály a selektory?
+   - Kanály (Channels) jsou abstrakce, které umožňují efektivní a asynchronní komunikaci mezi Java kódem a I/O zdroji, jako jsou soubory, síťové sockety nebo datové proudy
+   - Selektory (Selectors) jsou komponenty, které sledují a řídí události na více kanálech současně, což umožňuje efektivní zpracování událostí a multiplexing I/O operací
+
+2. Výhody kanálů a selektorů:
+   - Efektivita: Kanály a selektory umožňují efektivní využití systémových zdrojů, jako je paměť a I/O, protože umožňují asynchronní a událostmi řízený přístup k I/O zdrojům
+   - Flexibilita: Kanály a selektory poskytují jednotné rozhraní pro různé typy I/O zdrojů, což usnadňuje vývoj a údržbu aplikací, které pracují s různými typy dat a komunikací
+   - Škálovatelnost: Kanály a selektory umožňují efektivní zpracování velkého počtu současných spojení, což je užitečné pro aplikace, které vyžadují vysokou propustnost a nízkou latenci
+
+3. Použití kanálů a selektorů v JVM:
+   - Kanály a selektory se používají v širokém spektru aplikací, které vyžadují efektivní zpracování I/O operací a komunikace, jako jsou webové servery, proxy servery, aplikace pro zpracování zpráv nebo databázové servery
+   - Kanály a selektory jsou součástí Java NIO (New Input/Output) knihovny, která poskytuje rozšířené a výkonné I/O funkce pro Java aplikace
+
+Kanály a selektory jsou klíčovými komponentami Java NIO knihovny, které umožňují efektivní a asynchronní komunikaci mezi Java kódem a I/O zdroji. Tyto komponenty se používají v širokém spektru aplikací, které vyžadují efektivní zpracování I/O operací a komunikace, jako jsou webové servery, proxy servery, aplikace pro zpracování zpráv nebo databázové servery.
+
+## Synchronizace v multithreadových programech (atomické operace, mutex, semafor, rw-lock, spinlock, RCU). Kdy použít který mechanismus? Výkonnostní úzká místa zmíněných mechanismů:
+
+1. Atomické operace:
+   - Použití: Malé, jednoduché a rychlé operace, které mají garantovat konzistenci mezi vlákny
+   - Výkonnostní úzká místa: Omezená na jednoduché operace, může způsobit zpoždění v případě častých aktualizací dat
+
+2. Mutex:
+   - Použití: Vzájemné vyloučení přístupu k sdíleným zdrojům, vhodné pro krátké kritické sekce
+   - Výkonnostní úzká místa: Může způsobit zpoždění, pokud je přístup k sdíleným zdrojům často blokován
+
+3. Semafor:
+   - Použití: Omezení počtu současně prováděných operací, například při omezení počtu současných spojení
+   - Výkonnostní úzká místa: Může způsobit zpoždění v případě velkého počtu vláken čekajících na uvolnění semaforu
+
+4. Rw-lock:
+   - Použití: Oddělení čtecích a zapisovacích operací pro sdílené zdroje, vhodné pro situace s častými čtecími operacemi a méně častými zapisovacími operacemi
+   - Výkonnostní úzká místa: Může způsobit zpoždění, pokud zapisovací operace často blokují čtecí operace
+
+5. Spinlock:
+   - Použití: Vzájemné vyloučení přístupu k sdíleným zdrojům, vhodné pro velmi krátké kritické sekce, kde je očekávání na uvolnění zámku krátké
+   - Výkonnostní úzká místa: Může způsobit zvýšení vytížení procesoru, pokud vlákna čekají na uvolnění zámku po delší dobu
+
+6. RCU (Read-Copy-Update):
+   - Použití: Synchronizace čtecích a zapisovacích operací pro sdílené zdroje bez použití zámků, vhodné pro situace s častými čtecími operacemi a méně častými zapisovacími operacemi
+   - Výkonnostní úzká místa: Může způsobit zpoždění v případě častých zapisovacích operací nebo velkého množství vláken, kvůli nutnosti provádět čištění paměti a koordinaci mezi vlákny
+
+Při výběru synchronizačního mechanismu je důležité zvážit následující faktory:
+
+- Četnost a typ operací (čtení, zápis) prováděných na sdílených zdrojích
+- Počet vláken, které přistupují k sdíleným zdrojům
+- Očekávané doby čekání na zámky nebo jiné synchronizační mechanismy
+- Důležitost výkonu a škálovatelnosti aplikace
+
+Výběr vhodného synchronizačního mechanismu může mít významný dopad na výkon a škálovatelnost aplikace. Je důležité provádět testy a analýzu výkonu, aby bylo zajištěno, že zvolený mechanismus splňuje požadavky aplikace a nepředstavuje výkonnostní úzká místa.
+
+## Synchronizace v "read-mostly workloads" (práce s převážně čtecími operacemi), výhody a nevýhody různých synchronizačních mechanismů:
+
+1. Atomické operace:
+   - Výhody: Rychlé, jednoduché a bez zámku
+   - Nevýhody: Omezené na jednoduché operace, méně vhodné pro složitější sdílené struktury
+
+2. Mutex:
+   - Výhody: Zajišťuje vzájemné vyloučení přístupu k sdíleným zdrojům
+   - Nevýhody: Může způsobit zpoždění, pokud je přístup k sdíleným zdrojům často blokován
+
+3. Read-write lock (rw-lock):
+   - Výhody: Umožňuje paralelní čtení, odděluje čtecí a zapisovací operace
+   - Nevýhody: Může způsobit zpoždění, pokud zapisovací operace často blokují čtecí operace
+
+4. RCU (Read-Copy-Update):
+   - Výhody: Bez zámku, umožňuje efektivní čtení bez blokování
+   - Nevýhody: Může způsobit zpoždění v případě častých zapisovacích operací, kvůli nutnosti provádět čištění paměti a koordinaci mezi vlákny
+
+5. StampedLock:
+   - Výhody: Podpora pro optimalizované čtení bez zámku, oddělení čtecích a zapisovacích operací
+   - Nevýhody: Složitější použití, může způsobit zpoždění, pokud zapisovací operace často blokují čtecí operace
+
+Pro read-mostly workloads, kde je většina operací čtecích a zapisovací operace jsou méně časté, jsou vhodné mechanismy, které minimalizují dopad zapisovacích operací na čtecí operace a umožňují efektivní paralelní čtení. Mezi takové mechanismy patří rw-lock, RCU a StampedLock.
+
+Výběr vhodného synchronizačního mechanismu závisí na konkrétních požadavcích aplikace a na potřebě optimalizace výkonu a škálovatelnosti. Je důležité provádět testy a analýzu výkonu, aby bylo zajištěno, že zvolený mechanismus splňuje požadavky aplikace a nepředstavuje výkonnostní úzká místa.
+
+## Cache-efektivní datové struktury a algoritmy (např. násobení matic):
+
+Cache-efektivní datové struktury a algoritmy jsou navrženy tak, aby minimalizovaly přístupy k paměti a využily cache CPU co nejlépe. Příklady cache-efektivních datových struktur a algoritmů:
+
+1. Cache-oblivious algoritmy:
+   - Navrženy tak, aby efektivně využily cache bez znalosti velikosti cache nebo cache line
+   - Příklad: Cache-oblivious násobení matic, které rozdělí matice na menší bloky a provádí násobení bloků s efektivním využitím cache
+
+2. Cache-aware algoritmy:
+   - Navrženy s vědomím velikosti cache a cache line, což umožňuje maximalizovat využití cache
+   - Příklad: Cache-aware násobení matic, které rozdělí matice na bloky velikosti, která odpovídá velikosti cache, a násobí bloky efektivně
+
+3. B-stromy:
+   - Cache-efektivní stromová datová struktura, která má větší větve než binární stromy, což umožňuje efektivnější využití cache
+   - Příklad: B-stromy se používají v databázových systémech a souborových systémech pro efektivní vyhledávání a manipulaci s daty
+
+4. Bloom filtry:
+   - Cache-efektivní datová struktura, která umožňuje rychlé a efektivní testování přítomnosti prvku v množině s malou paměťovou náročností
+   - Příklad: Bloom filtry se používají pro rychlé vyhledávání v cache nebo pro detekci duplicitních dat
+
+5. Compact hash tabulky:
+   - Cache-efektivní varianta hash tabulek, která minimalizuje paměťovou náročnost a zlepšuje využití cache
+   - Příklad: Compact hash tabulky se používají pro rychlé vyhledávání a ukládání dat s malou paměťovou náročností
+
+Pro dosažení cache-efektivity je důležité brát v úvahu vlastnosti paměti cache, jako je velikost cache, cache line, asociativita a politika nahrazování. Cache-efektivní algoritmy a datové struktury mohou výrazně zlepšit výkon aplikace tím, že minimalizují přístupy k pomalejší hlavní paměti a maximalizují využití rychlé cache paměti.
+
+## Zásady cache pamětí a různé druhy cache chyb:
+
+Cache paměť je rychlá a menší paměť mezi CPU a hlavní pamětí (RAM), která zlepšuje výkon tím, že udržuje kopie často používaných dat z hlavní paměti. Cache paměť využívá vlastnosti prostorové a časové lokalitě přístupu k datům.
+
+Různé druhy cache chyb (misses):
+
+1. Compulsory miss (nevyhnutelná chyba):
+   - Způsobena prvním přístupem k datům, která nejsou v cache
+   - Nelze zcela eliminovat, může být minimalizováno efektivním přednačítáním dat do cache
+
+2. Capacity miss (kapacitní chyba):
+   - Způsobena omezenou kapacitou cache paměti, když je počet potřebných dat větší než velikost cache
+   - Může být zlepšeno zvětšením cache nebo využitím cache-efektivních algoritmů a datových struktur
+
+3. Conflict miss (konfliktní chyba):
+   - Způsobena kolizemi v cache záznamech, kdy různá data mapují na stejnou pozici v cache
+   - Může být zlepšeno zvýšením asociativity cache, použitím cache-oblivious nebo cache-aware algoritmů
+
+4. Coherence miss (koherenční chyba):
+   - Způsobena nekonzistencí mezi cache pamětí různých procesorů v multiprocesorovém systému
+   - Může být zlepšeno použitím koherentních protokolů a správných synchronizačních mechanismů
+
+Pro efektivní využití cache pamětí je důležité minimalizovat počet cache chyb a zohlednit vlastnosti cache, jako je velikost cache, cache line, asociativita a politika nahrazování. Cache-efektivní algoritmy a datové struktury mohou výrazně zlepšit výkon aplikace tím, že minimalizují přístupy k pomalejší hlavní paměti a maximalizují využití rychlé cache paměti.
+
+## Self-evicting kód:
+
+Self-evicting kód je kód, který je napsán tak, aby se záměrně vyhýbal využití cache paměti nebo z ní byl rychle vytlačen. Tento typ kódu může být užitečný v některých případech, například:
+
+1. Pro zabezpečení:
+   - Když chcete minimalizovat dobu, po kterou citlivá data zůstávají v cache paměti, a snížit tak riziko útoku, který by zneužil přístup k těmto datům (např. cache side-channel útoky)
+
+2. Pro účely vyvažování zátěže:
+   - Když chcete zajistit, že kritické části kódu nebudou vytlačeny z cache paměti méně důležitými částmi kódu, které by mohly vést k výkonnostním problémům
+
+Pro napsání self-evicting kódu je třeba použít techniky, které záměrně zhoršují vlastnosti prostorové a časové lokalitě přístupu k datům a zabraňují jejich uchování v cache paměti. Některé z těchto technik mohou zahrnovat:
+
+1. Použití nestandardních přístupových vzorů k datům
+2. Záměrné prokládání přístupu k různým datovým oblastem, aby byla zvýšena pravděpodobnost vytlačení dat z cache
+3. Použití technik, které ztěžují předpovědi větví, což zabraňuje efektivnímu přednačítání dat do cache
+
+Je důležité si uvědomit, že self-evicting kód může mít negativní dopad na výkon aplikace v důsledku zvýšených přístupů k pomalejší hlavní paměti. Použití self-evicting kódu by mělo být pečlivě zváženo a použito pouze tam, kde je to opravdu nezbytné.
+
+## False sharing - co to je a jak se s tím vypořádat?
+
+False sharing je situace, kdy více vláken v multiprocesorovém nebo multicore systému nezávisle přistupuje k různým datovým položkám, které jsou umístěny ve stejném bloku cache (cache line). Tento přístup může způsobit nežádoucí invalidaci cache line a zvýšení komunikace mezi procesory nebo jádry, což má za následek výkonnostní problémy.
+
+Jak se vypořádat s false sharingem:
+
+1. Zarovnání dat: 
+   - Zarovnejte často používaná data na hranice cache line, aby byla oddělena a nezpůsobovala false sharing. V některých jazycích (např. C/C++) lze použít direktivy pro zarovnání dat, jako je `alignas()`.
+
+2. Padding (vyplnění):
+   - Přidejte padding mezi datovými položkami, které jsou přístupné různými vlákny, aby byly umístěny ve vlastních cache lines. Padding může zahrnovat nevyužité proměnné nebo pole.
+
+3. Oddělení dat:
+   - Oddělte data, která jsou přístupná různými vlákny, do různých datových struktur nebo objektů, aby byla minimalizována pravděpodobnost false sharingu.
+
+4. Thread-local storage (úložiště pro vlákna):
+   - Pokud je to možné, použijte thread-local storage pro data, která jsou specifická pro jednotlivá vlákna. Tím se sníží potřeba sdílet data mezi vlákny a zároveň se minimalizuje false sharing.
+
+5. Použití optimalizací kompilátoru:
+   - Některé kompilátory mohou poskytovat optimalizace pro snížení false sharingu. Prozkoumejte možnosti optimalizace vašeho kompilátoru a zvažte jejich použití.
+
+6. Profiling a analýza:
+   - Použijte nástroje pro profiling a analýzu k identifikaci false sharingu ve vaší aplikaci. Tím získáte informace o kritických oblastech kódu, které mohou být zdrojem false sharingu a mohou být optimalizovány.
+
+Při práci s false sharingem je důležité najít rovnováhu mezi snižováním false sharingu a zachováním paměťové efektivity, protože některé z těchto technik mohou zvýšit paměťovou náročnost aplikace.
+
+## Profiling a optimalizace programů v kompilovaných jazycích (např. C/C++):
+
+1. Profiling:
+   - Profiling je proces sběru dat o výkonu a chování programu za účelem identifikace oblastí, které lze optimalizovat. Nástroje pro profiling v C/C++ mohou zahrnovat:
+     - `gprof`: GNU profiler pro měření času stráveného v jednotlivých funkcích
+     - `perf`: Nástroj pro profiling na úrovni jádra Linuxu
+     - `Valgrind`: Nástroj pro analýzu paměti a profiling výkonu
+
+2. Optimalizace kompilátoru:
+   - Kompilátory jako GCC nebo Clang poskytují různé úrovně optimalizace, které lze nastavit pomocí přepínačů:
+     - `-O0`: Žádná optimalizace (výchozí)
+     - `-O1`: Optimalizace pro rychlost a velikost kódu
+     - `-O2`: Optimalizace pro rychlost (bez zvýšení velikosti kódu)
+     - `-O3`: Agresivní optimalizace pro rychlost (může zvýšit velikost kódu)
+     - `-Os`: Optimalizace pro velikost kódu
+     - `-Ofast`: Optimalizace pro nejvyšší rychlost (ignoruje striktní standardy)
+
+3. Optimalizace kódu:
+   - Ruční optimalizace kódu může zahrnovat následující techniky:
+     - Smyčkové optimalizace: unrolling, fusion, či blocking
+     - Minimalizace režie volání funkcí: inlining, tail call optimalizace
+     - Optimalizace paměťového přístupu: zarovnání dat, cache-friendly algoritmy
+     - Využití paralelismu: SIMD instrukce, vícevláknové programování
+     - Snížení režie synchronizace: atomické operace, lock-free algoritmy
+
+4. Analýza a ladění:
+   - Analyzujte a laděte svůj kód za účelem identifikace a řešení výkonnostních problémů, např. pomocí následujících nástrojů:
+     - `gdb`: GNU Debugger pro ladění programů
+     - `strace`: Nástroj pro sledování systémových volání a signálů
+     - `ltrace`: Nástroj pro sledování volání knihoven
+     - `vtune`: Profiler a ladící nástroj od Intelu
+
+Při provádění optimalizací je důležité najít rovnováhu mezi výkonem, čitelností kódu a přenositelností.
+
+## Hardwarové čítače výkonu:
+
+Hardwarové čítače výkonu (Hardware Performance Counters, HPC) jsou speciální registry, které integrované do procesoru, umožňují sledovat různé aspekty výkonu a chování procesoru. Tyto čítače mohou poskytovat informace o:
+
+1. Počet provedených instrukcí
+2. Počet provedených cyklů
+3. Počet cache hitů a missů
+4. Počet branch (větvení) instrukcí a predikcí
+5. Počet zápisů a čtení z paměti
+6. Počet závislostí mezi instrukcemi
+7. Počet událostí souvisejících s pipeliningem
+
+Tyto informace lze použít k analýze výkonu programu a identifikaci úzkých míst nebo problémů, které lze optimalizovat. Některé nástroje pro práci s hardwarovými čítači výkonu zahrnují:
+
+- `perf`: Nástroj pro profiling na úrovni jádra Linuxu, který podporuje hardwarové čítače výkonu.
+- `PAPI`: Performance Application Programming Interface, multiplatformní knihovna pro práci s hardwarovými čítači výkonu.
+- `Intel VTune`: Profiler a ladící nástroj od Intelu, který podporuje hardwarové čítače výkonu.
+
+Při použití hardwarových čítačů výkonu je důležité mít na paměti, že jejich podpora a dostupnost se může lišit mezi různými procesory a architekturami.
+
 ## Profile-guided optimization
 ## Basics of C/C++ compilers - AST, intermediate representation
 ## high-level and low-level optimization passes
