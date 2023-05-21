@@ -500,17 +500,30 @@ Použití paměťových bariér:
 - Klíčové slovo `volatile` v programovacích jazycích (jako C, C++ nebo Java) označuje proměnnou, která může být změněna vnějšími procesy nebo paralelními vlákny
 - Při použití `volatile` kompilátor a běhové prostředí zajišťují, že přístupy k této proměnné nebudou optimalizovány ani mezipaměťovány, což zajišťuje konzistentní a aktuální hodnoty pro všechna vlákna
 
-Vlastnosti volatile proměnných:
+### Java
+- `volatile` v Javě se používá pro označení proměnné, jejíž hodnota může být modifikována více vlákny a jejíž přístupy by neměly být optimalizovány.
+- Klíčové vlastnosti:
+  - Viditelnost: Čtení a zápis proměnné označené jako `volatile` jsou zaručeně viditelné pro ostatní vlákna.
+  - Pořadí: Ustanovuje vzájemný vztah happens-before, což zajišťuje, že akce před zápisem do `volatile` proměnné se provedou před následujícími akcemi po jejím čtení.
+- Použití:
+  - Jednoduché příznakové proměnné sdílené mezi více vlákny.
+  - Koordinace mezi vlákny pomocí sdílené proměnné.
+- Omezení:
+  - Neposkytuje atomicitu pro složené operace.
+  - Omezené synchronizační schopnosti ve srovnání s `synchronized` bloky, zámky nebo atomickými třídami.
 
-1. Zajišťují, že čtení a zápis volatile proměnné je vždy aktuální a konzistentní mezi různými vlákny
-2. Zabraňují reorganizaci čtení a zápisů proměnné kompilátorem nebo procesorem (memory ordering)
-3. Zajišťují viditelnost změn v proměnné mezi vlákny bez nutnosti použití explicitních synchronizačních mechanismů, jako jsou zámky (locks) nebo bariéry (barriers)
+### C++
+- Klíčové slovo `volatile` v C++ označuje, že hodnota proměnné se může kdykoliv změnit bez vědomí kompilátoru, často z důvodu externích faktorů.
+- Klíčové vlastnosti:
+  - Čtení/Zápis volatile: Přikazuje kompilátoru vždy číst a zapisovat do paměti pro danou proměnnou, aniž by se spoléhal na mezipaměťové hodnoty.
+  - Externí modifikace: Označuje, že proměnnou mohou měnit externí faktory, jako je hardware nebo jiná vlákna.
+- Použití:
+  - Přístup k registrům hardware připojených k paměti.
+  - Vícevláknové prostředí, kde více vláken přistupuje ke stejné proměnné.
+- Omezení:
+  - Samotné `volatile` neposkytuje záruky synchronizace nebo atomicity.
+  - Pro synchronizaci a viditelnost napříč více jádry nebo vlákny je nutné použít vhodné synchronizační mechanismy, jako jsou mutexy, atomické typy nebo bariéry paměti.
 
-Použití volatile proměnných:
-
-- Volatile proměnné jsou užitečné v situacích, kdy je důležité zajistit, že všechna vlákna vidí nejaktuálnější hodnotu proměnné
-- Mohou být použity pro komunikaci mezi vlákny, sdílení stavu nebo synchronizaci
-- Je důležité poznamenat, že volatile proměnné neposkytují atomičnost nebo vzájemné vyloučení (mutual exclusion), a proto nemusí být dostatečné pro řešení všech problémů se souběžností, jako jsou data race
 
 ## Synchronizace - tenké (thin), tlusté (fat) a zaujaté (biased) zámky:
 
@@ -1575,6 +1588,59 @@ Tyto informace lze použít k analýze výkonu programu a identifikaci úzkých 
 
 Při použití hardwarových čítačů výkonu je důležité mít na paměti, že jejich podpora a dostupnost se může lišit mezi různými procesory a architekturami.
 
-## Profile-guided optimization
-## Basics of C/C++ compilers - AST, intermediate representation
-## high-level and low-level optimization passes
+## Optimalizace řízená profilem (Profile-Guided Optimization, PGO):
+
+Optimalizace řízená profilem (PGO) je technika optimalizace kompilátoru, která používá data získaná z profilingu běhu programu za účelem informování kompilátoru o tom, jak nejlépe optimalizovat kód. PGO zahrnuje následující kroky:
+
+1. Kompilace programu s přepínačem pro generování profilovacích informací (např. `-fprofile-generate` v GCC nebo Clang).
+2. Spuštění programu na reprezentativní sadě vstupů, které zahrnují typické scénáře použití, aby byly vygenerovány profilovací data.
+3. Opětovná kompilace programu s přepínačem pro využití profilovacích informací (např. `-fprofile-use` v GCC nebo Clang).
+
+PGO může přinést následující výhody:
+
+- Lepší optimalizace na úrovni zdrojového kódu: Kompilátor může zohlednit skutečné chování programu při volbě optimalizačních strategií.
+- Optimalizace inliningu funkcí: Kompilátor může lépe rozhodnout, které funkce by měly být inlinovány na základě jejich skutečného použití.
+- Optimalizace větvení: Kompilátor může předpovědět pravděpodobnost větvících instrukcí a generovat efektivnější kód.
+- Optimalizace rozložení kódu: Kompilátor může rozhodnout, jakým způsobem uspořádat kód v paměti pro snížení cache missů.
+
+Je důležité provést profiling na reprezentativní sadě vstupů, aby PGO mohla efektivně zlepšit výkon programu. PGO může mít významný dopad na výkon, ale jeho výsledky se mohou lišit v závislosti na konkrétním programu a jeho použití.
+
+## Základy kompilátorů C/C++ - AST, intermediální reprezentace:
+
+1. Abstract Syntax Tree (AST):
+   - AST je stromová struktura, která reprezentuje zdrojový kód programu ve formě, která je snadno zpracovatelná pro další analýzy a transformace.
+   - AST je vytvořen během syntaktické analýzy zdrojového kódu a zachycuje informace o struktuře kódu, např. deklarace, přiřazení, cykly a podmínky.
+   - AST slouží jako vstup pro další fáze kompilace, jako je sémantická analýza, optimalizace a generování kódu.
+
+2. Intermediální reprezentace (Intermediate Representation, IR):
+   - IR je zjednodušená reprezentace programu, která slouží jako mezikrok mezi AST a výsledným strojovým kódem.
+   - IR je navržen tak, aby byl snadno analyzovatelný a modifikovatelný pro optimalizace a transformace kódu.
+   - Existují různé formy IR, například:
+     - Three-Address Code (TAC): Lineární sekvence instrukcí, kde každá instrukce má nejvýše tři operandy.
+     - Static Single Assignment (SSA): IR, ve kterém je každá proměnná přiřazena pouze jednou.
+
+Kompilátory C/C++ jako GCC nebo Clang provádějí několik transformací a optimalizací na úrovni AST a IR před generováním výsledného strojového kódu. Tyto transformace a optimalizace mohou zahrnovat zjednodušení výrazů, inlining funkcí, eliminaci mrtvého kódu, propagaci konstant a mnoho dalších.
+
+## Optimalizační průchody na vysoké a nízké úrovni:
+
+1. Optimalizace na vysoké úrovni (High-Level Optimization):
+   - Tyto optimalizace se provádějí na úrovni zdrojového kódu nebo abstraktního syntaktického stromu (AST).
+   - Cílem je zlepšit výkon programu pomocí transformací, které využívají znalosti o struktuře a sémantice zdrojového kódu.
+   - Příklady optimalizací na vysoké úrovni:
+     - Zjednodušení výrazů
+     - Eliminace mrtvého kódu
+     - Zabalení (wrapping) a rozbalení (unwrapping) cyklů
+     - Rozdělení proměnných
+     - Odstraňování společných podvýrazů
+
+2. Optimalizace na nízké úrovni (Low-Level Optimization):
+   - Tyto optimalizace se provádějí na úrovni intermediální reprezentace (IR) nebo strojového kódu.
+   - Cílem je zlepšit výkon programu pomocí transformací, které využívají znalosti o architektuře procesoru a paměti.
+   - Příklady optimalizací na nízké úrovni:
+     - Alokační optimalizace registrů
+     - Inlining funkcí
+     - Sdílení registrů mezi proměnnými
+     - Optimalizace pipeliningu
+     - Optimalizace větvení
+
+Kompilátory C/C++ jako GCC nebo Clang provádějí řadu optimalizačních průchodů na vysoké i nízké úrovni před generováním výsledného strojového kódu. Tyto průchody mohou být řízeny pomocí přepínačů kompilátoru, které umožňují nastavit různé úrovně optimalizace, například `-O1`, `-O2`, `-O3` a `-Os`.
