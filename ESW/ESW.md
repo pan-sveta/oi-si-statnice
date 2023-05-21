@@ -505,6 +505,7 @@ Použití paměťových bariér:
 - Klíčové vlastnosti:
   - Viditelnost: Čtení a zápis proměnné označené jako `volatile` jsou zaručeně viditelné pro ostatní vlákna.
   - Pořadí: Ustanovuje vzájemný vztah happens-before, což zajišťuje, že akce před zápisem do `volatile` proměnné se provedou před následujícími akcemi po jejím čtení.
+  - Atomické R/W operace
 - Použití:
   - Jednoduché příznakové proměnné sdílené mezi více vlákny.
   - Koordinace mezi vlákny pomocí sdílené proměnné.
